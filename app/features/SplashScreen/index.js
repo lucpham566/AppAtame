@@ -27,6 +27,8 @@ const SplashScreen = props => {
         },
       }),
     );
+    return function cleanup() {
+    };
   }, []);
 
   return (

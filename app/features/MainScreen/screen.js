@@ -24,7 +24,7 @@ const TabScreen = () => {
           let tintColor = '#383C3F';
           switch (route.name) {
             case 'HomeScreen':
-              source_image = require('../../assets/image/shopee.png');
+              source_image = require('../../assets/image/TongQuan.png');
               break;
             case 'TongQuanScreen':
               source_image = require('../../assets/image/TongQuan.png');
@@ -48,7 +48,7 @@ const TabScreen = () => {
               style={{
                 width: 24,
                 height: 24,
-                tintColor: focused ? '#F56D11' : tintColor,
+                tintColor: focused ? COLOR.primary : tintColor,
               }}
               source={source_image}
             />
@@ -58,7 +58,7 @@ const TabScreen = () => {
           let label;
           switch (route.name) {
             case 'HomeScreen':
-              label = 'Shopee';
+              label = 'Tổng quan';
               break;
             case 'TongQuanScreen':
               label = 'Tổng quan';
@@ -80,7 +80,7 @@ const TabScreen = () => {
           return (
             <Text
               style={{
-                color: focused ? '#F56D11' : '#6F6F6F',
+                color: focused ? COLOR.primary : COLOR.grey,
                 fontSize: 10,
                 fontWeight: 'bold',
                 marginBottom: 2,
@@ -96,7 +96,7 @@ const TabScreen = () => {
       }}>
       <Tab.Screen name="HomeScreen" component={HomeScreen} />
 
-      <Tab.Screen name="TongQuanScreen" component={TongQuanScreen} />
+      {/* <Tab.Screen name="TongQuanScreen" component={TongQuanScreen} /> */}
       <Tab.Screen name="BaoCaoHieuQuaScreen" component={BaoCaoHieuQuaScreen} />
       <Tab.Screen name="QuangCaoScreen" component={QuangCaoScreen} />
       {/* <Tab.Screen
@@ -107,7 +107,7 @@ const TabScreen = () => {
         name="QuangCaoTimKiemScreen"
         component={QuangCaoTimKiemScreen}
       /> */}
-      <Tab.Screen name="CongCuTuKhoaScreen" component={CongCuTuKhoaScreen} />
+      {/* <Tab.Screen name="CongCuTuKhoaScreen" component={CongCuTuKhoaScreen} /> */}
     </Tab.Navigator>
   );
 };

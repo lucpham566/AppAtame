@@ -141,13 +141,15 @@ const DrawerMenu = props => {
           width: '100%',
           paddingTop: 0,
         }}
-        source={require('../../assets/image/banner_login.png')}>
+        source={{
+          uri: 'https://img.pikbest.com/backgrounds/20220119/business-curve-blue-sci-tech-style-banner_6239878.jpg!bw700',
+        }}>
         <View style={styles.userSection}>
           <Thumbnail
             style={styles.avatar}
             square
             source={{
-              uri: 'https://atosa.asia/wp-content/uploads/2022/05/Logo-Atosa-Shopee-02.png',
+              uri: 'https://inkythuatso.com/uploads/thumbnails/800/2021/11/logo-shopee-inkythuatso-2-01-24-14-52-10.jpg',
             }}
           />
           <View style={styles.userInfo}>

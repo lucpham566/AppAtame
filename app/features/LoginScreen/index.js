@@ -54,13 +54,16 @@ const LoginScreen = props => {
     },
   });
 
-  useEffect(async () => {
-    const accountRemember = await getItem('accountRemember');
-    if (accountRemember?.remember) {
-      setValue('username', accountRemember.username);
-      setValue('password', accountRemember.password);
-      setRemember(accountRemember.remember);
+  useEffect(() => {
+    async function fetchData() {
+      const accountRemember = await getItem('accountRemember');
+      if (accountRemember?.remember) {
+        setValue('username', accountRemember.username);
+        setValue('password', accountRemember.password);
+        setRemember(accountRemember.remember);
+      }
     }
+    fetchData();
   }, []);
 
   const { navigation } = props;
@@ -143,6 +146,7 @@ const LoginScreen = props => {
           width: '100%',
           maxHeight: '30%',
           justifyContent: 'center',
+          alignItems: 'center',
           flexDirection: 'row',
         }}
       >
@@ -167,12 +171,12 @@ const LoginScreen = props => {
               color: COLOR.white,
               textTransform: 'uppercase',
             }}>
-            ATOSA Phần mềm quảng cáo Shopee Hiệu quả nhất
+            ATAME Phần mềm quảng cáo tiktok
           </Text>
         </View>
 
         <Thumbnail
-          style={styles.logo}
+          style={{ width: "50%", height: "100%", margin: 10 }}
           source={require('../../assets/image/bg_tiktok_ads.png')}
         />
       </View>
@@ -206,7 +210,7 @@ const LoginScreen = props => {
                 name={'user'}
               /> */}
               <View style={{ paddingRight: 10, marginRight: 10, borderRightWidth: 1, borderColor: COLOR.greyLight, }}>
-                <Image style={{ width: 20, height: 20 }} source={require('../../assets/image/user.png')} />
+                <Image style={{ width: 20, height: 20, tintColor: COLOR.primary }} source={require('../../assets/image/user.png')} />
               </View>
               <Input
                 placeholder="Tài khoản"
@@ -230,7 +234,7 @@ const LoginScreen = props => {
               style={styles.itemInput}
               error={errors.password ? true : false}>
               <View style={{ paddingRight: 10, marginRight: 10, borderRightWidth: 1, borderColor: COLOR.greyLight, }}>
-                <Image style={{ width: 20, height: 20 }} source={require('../../assets/image/lock.png')} />
+                <Image style={{ width: 20, height: 20, tintColor: COLOR.primary }} source={require('../../assets/image/lock.png')} />
               </View>
               {/* 
               <Icon

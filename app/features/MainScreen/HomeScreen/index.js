@@ -143,9 +143,12 @@ const HomeScreen = props => {
     },
   ];
 
-  useEffect(async () => {
-    const info = await getItem('userInfo');
-    setUserInfo(info);
+  useEffect(() => {
+    async function fetchData() {
+      const info = await getItem('userInfo');
+      setUserInfo(info);
+    }
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -398,7 +401,9 @@ const HomeScreen = props => {
           width: '100%',
           justifyContent: 'center',
         }}
-        source={require('../../../assets/image/Bg.png')}>
+        source={{
+          uri: "https://img.pikbest.com/backgrounds/20220119/business-curve-blue-sci-tech-style-banner_6239878.jpg!bw700"
+        }}>
         <HeaderMain title="" navigation={navigation} />
         <View style={styles.infoHead}>
           <View

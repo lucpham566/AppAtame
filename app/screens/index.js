@@ -34,8 +34,8 @@ const Screens = () => {
         headerShown: false,
         cardStyle: { backgroundColor: '#fff' },
       }}>
-      <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
       <Stack.Screen name="MainScreen" component={MainScreen} />
       <Stack.Screen name="TongQuanScreen" component={TongQuanScreen} />

@@ -14,6 +14,7 @@ import 'moment/locale/vi';
 import moment from 'moment';
 import { setCustomText } from 'react-native-global-props';
 import toastConfig from './components/BaseToast/config';
+import { Text } from 'native-base';
 
 moment.locale('vi');
 
