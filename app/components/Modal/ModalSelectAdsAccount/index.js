@@ -8,22 +8,26 @@ import {
   Image,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {COLOR} from './../../../theme/color';
+import {COLOR} from '../../../theme/color';
 import {Container, Header, Content, List, ListItem, Button} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
 import {
+  hideModalSelectAdsAccount,
   hideModalSelectShop,
+  setAdsAccount,
   setShop,
 } from '../../../features/MainScreen/actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import {Modalize} from 'react-native-modalize';
 
-function ModalSelectShop() {
+function ModalSelectAdsAccount() {
   const shopList = useSelector(store => store.account.shopList);
+  const adsAccountList = useSelector(store => store.account.adsAccountList);
   const currentShop = useSelector(store => store.account.currentShop);
-  const showModalSelectShop = useSelector(
-    store => store.account.showModalSelectShop,
+  const currentAdsAccount = useSelector(store => store.account.currentAdsAccount);
+  const showModalSelectAdsAccount = useSelector(
+    store => store.account.showModalSelectAdsAccount,
   );
 
   const dispatch = useDispatch();
@@ -31,19 +35,19 @@ function ModalSelectShop() {
   const modalizeRef = useRef(null);
 
   useEffect(() => {
-    if (showModalSelectShop) {
+    if (showModalSelectAdsAccount) {
       modalizeRef.current?.open();
     } else {
       modalizeRef.current?.close();
     }
-  }, [showModalSelectShop]);
+  }, [showModalSelectAdsAccount]);
 
   const onOpen = () => {
     modalizeRef.current?.open();
   };
 
   const toggleModal = () => {
-    dispatch(hideModalSelectShop());
+    dispatch(hideModalSelectAdsAccount());
   };
 
   const setCurrentShopId = async data => {
@@ -55,22 +59,17 @@ function ModalSelectShop() {
   };
 
   const renderListShop = () => {
-    return shopList?.map((item, index) => {
+    return adsAccountList?.map((item, index) => {
       return (
         <TouchableOpacity
           style={[
             styles.shopItem,
-            currentShop?.id === item.id && styles.shopActive,
+            currentAdsAccount?.advertiser_id === item.advertiser_id && styles.shopActive,
           ]}
           key={index}
           onPress={() => {
-            setCurrentShopId(item.id);
-            dispatch(setShop({shopId: item.id}));
+            dispatch(setAdsAccount(item.advertiser_id));
             toggleModal();
-            Toast.show({
-              type: 'success',
-              text1: 'Thay đổi shop thành công',
-            });
           }}>
           <Image
             style={{width: 20, height: 20, marginRight: 10}}
@@ -78,9 +77,9 @@ function ModalSelectShop() {
           />
           <Text
             style={{
-              color: currentShop?.id === item.id ? COLOR.primary : COLOR.black,
+              color: currentAdsAccount?.advertiser_id === item.advertiser_id ? COLOR.primary : COLOR.black,
             }}>
-            {item.custom_info.display_name}
+            {item.name}
           </Text>
         </TouchableOpacity>
       );
@@ -103,7 +102,7 @@ function ModalSelectShop() {
             textAlign: 'center',
             marginVertical: 20,
           }}>
-          Tài khoản Tiktok
+          Tài khoản quảng cáo
         </Text>
         <List>{renderListShop()}</List>
       </View>
@@ -115,7 +114,7 @@ function ModalSelectShop() {
       onBackdropPress={() => {
         toggleModal();
       }}
-      isVisible={showModalSelectShop}>
+      isVisible={showModalSelectAdsAccount}>
       <View style={styles.modalBox}>
         <ScrollView style={{maxHeight: 300}}>
           <List>
@@ -166,4 +165,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ModalSelectShop;
+export default ModalSelectAdsAccount;

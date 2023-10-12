@@ -31,9 +31,11 @@ import { getItem } from '../../../commons/AsyncStorageUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../LoginScreen/actions';
 import {
+  getAdsAccountList,
   getAdsPerformance,
   getAdsReportHome,
   getShopReportHome,
+  showModalSelectAdsAccount,
   showModalSelectShop,
 } from '../actions';
 import { formatNumber } from '../../../helpers/formatNumber';
@@ -54,6 +56,7 @@ const HomeScreen = props => {
   const [refreshing, setRefreshing] = useState(false);
   const goiSanPham = useSelector(store => store.account.goiSanPham);
   const currentShop = useSelector(store => store.account.currentShop);
+  const currentAdsAccount = useSelector(store => store.account.currentAdsAccount);
   const shopList = useSelector(store => store.account.shopList);
   const shopReportHome = useSelector(store => store.account.shopReportHome);
   const adsReportHome = useSelector(store => store.account.adsReportHome);
@@ -153,20 +156,22 @@ const HomeScreen = props => {
 
   useEffect(() => {
     const data = {
-      id: currentShop?._id,
+      id: currentShop?.id,
       optionFilter: optionFilter,
       type: 'homepage',
     };
-
     dispatch(getShopReportHome(data));
     dispatch(getAdsReportHome(data));
     dispatch(getAdsPerformance(data));
+    if (currentShop?.id) {
+      dispatch(getAdsAccountList(currentShop?.id));
+    }
   }, [currentShop, optionFilter]);
 
   const onRefresh = () => {
     setRefreshing(true);
     const data = {
-      id: currentShop?._id,
+      id: currentShop?.id,
       optionFilter: optionFilter,
       type: 'homepage',
     };
@@ -174,6 +179,9 @@ const HomeScreen = props => {
     dispatch(getShopReportHome(data));
     dispatch(getAdsReportHome(data));
     dispatch(getAdsPerformance(data));
+    if (currentShop?.id) {
+      dispatch(getAdsAccountList(currentShop?.id));
+    }
     setRefreshing(false);
   };
 
@@ -418,9 +426,7 @@ const HomeScreen = props => {
               <Thumbnail
                 style={styles.logo}
                 circular
-                source={{
-                  uri: 'https://inkythuatso.com/uploads/thumbnails/800/2021/11/logo-shopee-inkythuatso-2-01-24-14-52-10.jpg',
-                }}
+                source={require(`../../../assets/image/tiktok_banner.png`)}
               />
             </View>
             <View style={{ flex: 1 }}>
@@ -445,7 +451,7 @@ const HomeScreen = props => {
                       fontSize: 18,
                       color: COLOR.white,
                     }}>
-                    {currentShop?.username}
+                    {currentShop?.custom_info?.display_name}
                   </Text>
                   <Icon
                     style={{
@@ -459,7 +465,7 @@ const HomeScreen = props => {
               </View>
               <View style={{ marginBottom: 5 }}>
                 <Text style={{ color: COLOR.white }}>
-                  ID:{currentShop?.shop_id}
+                  ID: {currentShop?.id}
                 </Text>
               </View>
             </View>
@@ -479,6 +485,38 @@ const HomeScreen = props => {
           </TouchableOpacity> */}
         </View>
       </ImageBackground>
+      <View >
+        <View style={{ marginBottom: 5 }}>
+          <TouchableOpacity
+            style={{ flexDirection: 'row' }}
+            onPress={() => {
+              dispatch(showModalSelectAdsAccount());
+            }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontWeight: 'bold',
+                fontSize: 18,
+                color: COLOR.black,
+              }}>
+              {currentAdsAccount?.name}
+            </Text>
+            <Icon
+              style={{
+                marginLeft: 5,
+              }}
+              size={20}
+              color={COLOR.black}
+              name={'sort-down'}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={{ marginBottom: 5 }}>
+          <Text style={{ color: COLOR.black }}>
+            ID: {currentAdsAccount?.advertiser_id}
+          </Text>
+        </View>
+      </View>
       <ModalScrollBottom />
       <View
         style={{
@@ -511,26 +549,6 @@ const HomeScreen = props => {
             </Text>
             <View style={styles.listStatistical}>
               {renderListStatisticalAdsReport()}
-            </View>
-          </View>
-          <View style={styles.boxStatistical}>
-            <Text
-              style={{
-                color: COLOR.black,
-                fontSize: 18,
-                fontWeight: 'bold',
-              }}>
-              Chỉ số toàn shop
-            </Text>
-            <View style={styles.listStatistical}>
-              {renderListStatisticalShopReport()}
-            </View>
-            <View>
-              <LineChartCustom
-                data={dataChart}
-                titleChart={titleChart}
-                labels={labelChart}
-              />
             </View>
           </View>
 

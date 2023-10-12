@@ -27,7 +27,7 @@ const QuanLyShopScreen = ({navigation}) => {
     <Container>
       <HeaderTitle
         renderItemLeft={renderItemLeft()}
-        title="Chọn shop"
+        title="Tài khoản Tiktok"
         navigation={navigation}
       />
       <View style={styles.boxSection}>

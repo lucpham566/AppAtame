@@ -18,11 +18,38 @@ export const getShopListDone = data => {
   };
 };
 
+export const getAdsAccountList = tiktok_account_id => {
+  return {
+    type: types.GET_ADS_ACCOUNT_LIST,
+    payload: {
+      tiktok_account_id
+    },
+  };
+};
+
+export const getAdsAccountListDone = data => {
+  return {
+    type: types.GET_ADS_ACCOUNT_LIST_DONE,
+    payload: {
+      data,
+    },
+  };
+};
+
 export const setShop = data => {
   return {
     type: types.SET_SHOP,
     payload: {
       data,
+    },
+  };
+};
+
+export const setAdsAccount = advertiser_id => {
+  return {
+    type: types.SET_ADS_ACCOUNT,
+    payload: {
+      advertiser_id
     },
   };
 };
@@ -111,6 +138,25 @@ export const getAdsPerformance = data => {
 export const getAdsPerformanceDone = data => {
   return {
     type: types.GET_ADS_PERFORMANCE_DONE,
+    payload: {
+      data,
+    },
+  };
+};
+
+
+export const showModalSelectAdsAccount = data => {
+  return {
+    type: types.SHOW_MODAL_SELECT_ADS_ACCOUNT,
+    payload: {
+      data,
+    },
+  };
+};
+
+export const hideModalSelectAdsAccount = data => {
+  return {
+    type: types.HIDE_MODAL_SELECT_ADS_ACCOUNT,
     payload: {
       data,
     },

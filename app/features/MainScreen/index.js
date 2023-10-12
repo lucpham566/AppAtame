@@ -8,6 +8,7 @@ import ModalPrompt from '../../components/Modal/ModalPrompt';
 import TabScreen from './screen';
 import {COLOR} from '../../theme';
 import ModalScrollBottom from '../../components/Modal/ModalScrollBottom';
+import ModalSelectAdsAccount from '../../components/Modal/ModalSelectAdsAccount';
 
 const Drawer = createDrawerNavigator();
 
@@ -15,6 +16,7 @@ export default function MainScreen() {
   return (
     <View style={{flex: 1}}>
       <ModalSelectShop />
+      <ModalSelectAdsAccount />
       <ModalPrompt />
       {/* <ModalScrollBottom /> */}
       {/* <TabScreen /> */}

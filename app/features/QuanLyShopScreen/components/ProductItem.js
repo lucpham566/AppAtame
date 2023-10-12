@@ -17,7 +17,6 @@ const ProductItem = props => {
   const currentShop = useSelector(store => store.account.currentShop);
   const {item} = props;
   const dispatch = useDispatch();
-
   const setCurrentShopId = async data => {
     try {
       await AsyncStorage.setItem('currentShopId', data);
@@ -27,9 +26,10 @@ const ProductItem = props => {
   };
 
   const onSelectShop = () => {
-    setCurrentShopId(item._id);
-    dispatch(setShop({shopId: item._id}));
+    setCurrentShopId(item.id);
+    dispatch(setShop({shopId: item.id}));
   };
+
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       <View style={styles.productItem}>
@@ -38,20 +38,18 @@ const ProductItem = props => {
             <Thumbnail
               style={styles.productImage}
               square
-              source={{
-                uri: 'https://inkythuatso.com/uploads/thumbnails/800/2021/11/logo-shopee-inkythuatso-2-01-24-14-52-10.jpg',
-              }}
+              source={require(`../../../assets/image/tiktok_icon.png`)}
             />
             {/* {renderStatus(item?.campaign.state)} */}
           </View>
           <View style={{flex: 1}}>
             <Text style={styles.productName} numberOfLines={1}>
-              {item?.username}
+              {item?.custom_info?.display_name}
             </Text>
-            <Text style={styles.textDes}>ID : {item?.shop_id}</Text>
+            <Text numberOfLines={1} style={styles.textDes}>ID : {item?.id}</Text>
           </View>
           <View style={styles.boxAction}>
-            {currentShop._id === item._id ? (
+            {currentShop.id === item.id ? (
               <Text
                 style={{
                   color: '#1F65CD',

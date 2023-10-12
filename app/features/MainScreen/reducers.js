@@ -3,10 +3,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
   shopList: [],
+  adsAccountList: [],
   goiSanPham: {},
   currentShopId: null,
   currentShop: {},
+  currentAdsAccountId: null,
+  currentAdsAccount: null,
   showModalSelectShop: false,
+  showModalSelectAdsAccount: false,
   shopReportHome: {},
   adsReportHome: {},
   adsPerformance: {},
@@ -23,13 +27,8 @@ const accountReducer = (state = initialState, action) => {
       };
     case types.GET_SHOP_LIST_DONE:
       const { data } = action.payload;
-      let defaultShop = {};
-      if (state.currentShopId) {
-        defaultShop = data?.find(i => i._id == state.currentShopId);
-      } else {
-        defaultShop = data?.find(i => i.extra_data?.default);
-      }
-      if (defaultShop && defaultShop._id) {
+      defaultShop = data[0];
+      if (defaultShop && defaultShop.id) {
         return {
           ...state,
           currentShop: defaultShop,
@@ -40,12 +39,44 @@ const accountReducer = (state = initialState, action) => {
         ...state,
         shopList: data,
       };
+    case types.GET_ADS_ACCOUNT_LIST:
+      return {
+        ...state
+      };
+    case types.GET_ADS_ACCOUNT_LIST_DONE:
+      {
+        const { data } = action.payload;
+        let defaultAdsAccount = {};
+        if (state.currentAdsAccountId) {
+          defaultAdsAccount = data?.find(i => i.advertiser_id == state.currentAdsAccountId);
+        } else {
+          defaultAdsAccount = data[0];
+        }
+        if (defaultAdsAccount && defaultAdsAccount.advertiser_id) {
+          return {
+            ...state,
+            currentAdsAccount: defaultAdsAccount,
+            adsAccountList: data,
+          };
+        }
+        return {
+          ...state,
+          adsAccountList: data,
+        };
+      }
     case types.SET_SHOP:
       const shopId = action.payload.data.shopId;
-      const shop = state.shopList?.find(i => i._id == shopId);
+      const shop = state.shopList?.find(i => i.id == shopId);
       return {
         ...state,
         currentShop: shop,
+      };
+    case types.SET_ADS_ACCOUNT:
+      const advertiser_id = action.payload.advertiser_id;
+      const adsAccount = state.adsAccountList?.find(i => i.advertiser_id == advertiser_id);
+      return {
+        ...state,
+        currentAdsAccount: adsAccount,
       };
     case types.GET_GOI_SANPHAM_DONE:
       const goiSanPham = action.payload.data;
@@ -62,6 +93,16 @@ const accountReducer = (state = initialState, action) => {
       return {
         ...state,
         showModalSelectShop: false,
+      };
+    case types.SHOW_MODAL_SELECT_ADS_ACCOUNT:
+      return {
+        ...state,
+        showModalSelectAdsAccount: true,
+      };
+    case types.HIDE_MODAL_SELECT_ADS_ACCOUNT:
+      return {
+        ...state,
+        showModalSelectAdsAccount: false,
       };
     case types.SHOW_MODAL_PROMPT:
       return {
