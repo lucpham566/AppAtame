@@ -9,6 +9,7 @@ import {
   Image,
   Input,
   Item,
+  Picker,
   Thumbnail,
 } from 'native-base';
 import React, { useEffect } from 'react';
@@ -34,16 +35,18 @@ import {
   getAdsAccountList,
   getAdsPerformance,
   getAdsReportHome,
+  getReport,
   getShopReportHome,
   showModalSelectAdsAccount,
   showModalSelectShop,
 } from '../actions';
-import { formatNumber } from '../../../helpers/formatNumber';
+import { formatMoney, formatNumber } from '../../../helpers/formatNumber';
 import { showModalPrompt } from '../../../components/Modal/ModalPrompt/actions';
 import { useCallback } from 'react';
 import LineChartCustom from '../../../components/Chart/LineChart';
 import moment from 'moment';
 import ModalScrollBottom from '../../../components/Modal/ModalScrollBottom';
+import ProductList from './components/ProductList';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -56,12 +59,14 @@ const HomeScreen = props => {
   const [refreshing, setRefreshing] = useState(false);
   const goiSanPham = useSelector(store => store.account.goiSanPham);
   const currentShop = useSelector(store => store.account.currentShop);
+  const report = useSelector(store => store.account.report);
   const currentAdsAccount = useSelector(store => store.account.currentAdsAccount);
   const shopList = useSelector(store => store.account.shopList);
   const shopReportHome = useSelector(store => store.account.shopReportHome);
   const adsReportHome = useSelector(store => store.account.adsReportHome);
   const adsPerformance = useSelector(store => store.account.adsPerformance);
   const [optionFilter, setOptionFilter] = useState('real_time');
+  const [optionReport, setOptionReport] = useState('campaign');
 
   const [titleChart, setTitleChart] = useState(['shop_pv']);
   const [labelChart, setLabelChart] = useState([]);
@@ -153,6 +158,13 @@ const HomeScreen = props => {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (currentAdsAccount && currentShop && currentShop.id) {
+      dispatch(getReport({}, currentShop.id));
+    }
+  }, [currentAdsAccount]);
+
 
   useEffect(() => {
     const data = {
@@ -485,37 +497,49 @@ const HomeScreen = props => {
           </TouchableOpacity> */}
         </View>
       </ImageBackground>
-      <View >
-        <View style={{ marginBottom: 5 }}>
+      <View style={{ padding: 5 }}>
+        <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 5 }}>
           <TouchableOpacity
-            style={{ flexDirection: 'row' }}
+            style={{
+              flexDirection: 'row',
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: COLOR.white,
+              borderColor: COLOR.light,
+              borderWidth: 1,
+              borderRadius: 16,
+              padding: 10,
+              width: 200
+            }}
             onPress={() => {
               dispatch(showModalSelectAdsAccount());
             }}>
-            <Text
-              numberOfLines={1}
-              style={{
-                fontWeight: 'bold',
-                fontSize: 18,
-                color: COLOR.black,
-              }}>
-              {currentAdsAccount?.name}
-            </Text>
-            <Icon
-              style={{
-                marginLeft: 5,
-              }}
-              size={20}
-              color={COLOR.black}
-              name={'sort-down'}
-            />
+            <View>
+              <Text style={{ color: COLOR.grey, fontSize: 10 }}>
+                Tài khoản quảng cáo
+              </Text>
+              <Text
+                numberOfLines={1}
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 16,
+                  color: COLOR.black,
+                }}>
+                {currentAdsAccount?.name}
+              </Text>
+            </View>
+
           </TouchableOpacity>
+          <View style={{ paddingLeft: 5 }}>
+            <Text style={{ color: COLOR.black }}>
+              ID: {currentAdsAccount?.advertiser_id}
+            </Text>
+            <Text style={{ color: COLOR.primary, fontWeight: "bold" }}>
+              Số dư: {formatMoney(currentAdsAccount?.balance)}
+            </Text>
+          </View>
         </View>
-        <View style={{ marginBottom: 5 }}>
-          <Text style={{ color: COLOR.black }}>
-            ID: {currentAdsAccount?.advertiser_id}
-          </Text>
-        </View>
+
       </View>
       <ModalScrollBottom />
       <View
@@ -530,108 +554,18 @@ const HomeScreen = props => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View
+          {/* <View
             style={[
               styles.boxOption,
-              { flexDirection: 'row', justifyContent: 'space-between' },
+              { flexDirection: 'row', justifyContent: 'space-between' ,paddingBottom:10},
             ]}>
             {renderListOptionFilter()}
-          </View>
+          </View> */}
 
           <View style={styles.boxStatistical}>
-            <Text
-              style={{
-                color: COLOR.black,
-                fontSize: 18,
-                fontWeight: 'bold',
-              }}>
-              Chỉ số quảng cáo
-            </Text>
-            <View style={styles.listStatistical}>
-              {renderListStatisticalAdsReport()}
-            </View>
+            <ProductList data={report[optionReport]} optionAdsList={optionReport} setOptionAdsList={setOptionReport}/>
           </View>
 
-          {/* <View style={styles.menuTab}>{renderMenu}</View> */}
-
-          {/* <View style={styles.boxArticle}>
-            <Text
-              style={{
-                color: COLOR.black,
-                fontSize: 18,
-                fontWeight: 'bold',
-              }}>
-              Thông báo
-            </Text>
-            <View style={styles.listArticle}>
-              <View style={[styles.itemArticle]}>
-                <View style={{flex: 1, marginRight: 5}}>
-                  <Text
-                    style={{
-                      color: COLOR.grey,
-                      fontSize: 16,
-                    }}>
-                    Số lượng quảng cáo không hiệu quả
-                  </Text>
-                  <Text
-                    style={{
-                      color: COLOR.grey,
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                    }}>
-                    {adsPerformance?.low_effective?.number}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('BaoCaoHieuQuaScreen')}
-                  style={{
-                    backgroundColor: COLOR.primary,
-                    padding: 10,
-                    borderRadius: 6,
-                  }}>
-                  <Text style={{color: COLOR.white, fontSize: 12}}>
-                    Xem thêm
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.itemArticle]}>
-                <View style={{flex: 1, marginRight: 5}}>
-                  <Text
-                    style={{
-                      color: COLOR.grey,
-                      fontSize: 16,
-                    }}>
-                    Số lượng quảng cáo sắp hết ngân sách
-                  </Text>
-                  <Text
-                    style={{
-                      color: COLOR.grey,
-                      fontSize: 20,
-                      fontWeight: 'bold',
-                    }}>
-                    {adsPerformance?.low_quota?.number}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('QuangCaoHetNganSachScreen')
-                  }
-                  style={{
-                    backgroundColor: COLOR.primary,
-                    padding: 10,
-                    borderRadius: 6,
-                  }}>
-                  <Text style={{color: COLOR.white, fontSize: 12}}>
-                    Xem thêm
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View> */}
-          {/* 
-          <View style={styles.footerContainer}>
-            <SocialFooter />
-          </View> */}
         </ScrollView>
       </View>
     </Container>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
@@ -15,6 +15,7 @@ import moment from 'moment';
 import { setCustomText } from 'react-native-global-props';
 import toastConfig from './components/BaseToast/config';
 import { Text } from 'native-base';
+import { NotificationListener, requestUserPermission } from './helpers/pushNotifycation';
 
 moment.locale('vi');
 
@@ -24,6 +25,11 @@ const App = () => {
   });
 
 
+  useEffect(() => {
+    requestUserPermission();
+    NotificationListener();
+  }, [])
+  
   /*
     1. Create the config
   */
@@ -54,6 +60,7 @@ const App = () => {
       />
     ),
   };
+
 
 
   return (

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "194612157527",
+    "project_id": "tiktokads-a1857",
+    "storage_bucket": "tiktokads-a1857.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194612157527:android:f7efca045a8a10426e5712",
+        "android_client_info": {
+          "package_name": "com.appatame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANULjqdkiJ-ypf45PJGnbnk7rY52VEkY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

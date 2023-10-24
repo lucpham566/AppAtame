@@ -162,3 +162,23 @@ export const hideModalSelectAdsAccount = data => {
     },
   };
 };
+
+export const getReport = (data, tiktok_account_id) => {
+  return {
+    type: types.GET_REPORT,
+    payload: {
+      data,
+      tiktok_account_id
+    },
+  };
+};
+
+export const getReportDone = data => {
+  return {
+    type: types.GET_REPORT_DONE,
+    payload: {
+      data
+    },
+  };
+};
+

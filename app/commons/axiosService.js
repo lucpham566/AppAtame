@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getToken} from '../helpers/auth';
-import {urlServer} from './server';
+import { getToken } from '../helpers/auth';
+import { urlServer } from './server';
 
 class axiosService {
   constructor() {
@@ -59,9 +59,9 @@ class axiosService {
     return Promise.reject(err);
   }
 
-  get(url) {
+  get(url, body) {
     this.instance.defaults.headers.Authorization = `${getToken()}`;
-    return this.instance.get(url);
+    return this.instance.get(url, body);
   }
 
   post(url, body) {

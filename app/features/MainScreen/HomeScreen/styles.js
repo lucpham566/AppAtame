@@ -52,8 +52,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   boxStatistical: {
-    paddingHorizontal: 16,
-    paddingVertical: 15,
+    paddingHorizontal: 0,
     marginBottom:10,
 
     backgroundColor: COLOR.white,

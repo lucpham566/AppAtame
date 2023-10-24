@@ -15,6 +15,11 @@ const initialState = {
   adsReportHome: {},
   adsPerformance: {},
   lowQuotaCampaignIds: [],
+  report: {
+    campaign: [],
+    adgroup: [],
+    ads: []
+  }
 };
 
 const accountReducer = (state = initialState, action) => {
@@ -104,6 +109,19 @@ const accountReducer = (state = initialState, action) => {
         ...state,
         showModalSelectAdsAccount: false,
       };
+    case types.GET_REPORT:
+      return {
+        ...state
+      };
+    case types.GET_REPORT_DONE:
+      {
+        const report_data = action.payload.data;
+
+        return {
+          ...state,
+          report: report_data,
+        };
+      }
     case types.SHOW_MODAL_PROMPT:
       return {
         ...state,
