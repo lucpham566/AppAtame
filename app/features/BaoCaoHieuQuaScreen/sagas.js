@@ -96,7 +96,7 @@ function* watchUpdateAdsQuotaAction({payload}) {
 export function* baoCaoSaga() {
   yield takeEvery(GET_ADS_REPORT, watchGetAdsReportAction);
   yield takeEvery(BAOCAO_GET_PRODUCT_ADS_LIST, watchGetProductAdsListAction);
-  yield takeEvery(UPDATE_ADS_STATE, watchUpdateAdsStateAction);
+  //yield takeEvery(UPDATE_ADS_STATE, watchUpdateAdsStateAction);
   yield takeEvery(UPDATE_ADS_QUOTA, watchUpdateAdsQuotaAction);
 }
 

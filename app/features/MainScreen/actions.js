@@ -182,3 +182,44 @@ export const getReportDone = data => {
   };
 };
 
+
+export const updateAdsState = (data, tiktok_account_id, callback) => {
+  return {
+    type: types.UPDATE_ADS_STATE,
+    payload: {
+      data,
+      tiktok_account_id,
+      callback,
+    },
+  };
+};
+
+export const updateAdsStateDone = data => {
+  return {
+    type: types.UPDATE_ADS_STATE_DONE,
+    payload: {
+      data,
+    },
+  };
+};
+
+
+export const showModalConfigNotify = (data, callback) => {
+  return {
+    type: types.SHOW_MODAL_CONFIG_NOTIFY,
+    payload: {
+      data,
+      callback,
+    },
+  };
+};
+
+export const hideModalConfigNotify = (data, callback) => {
+  return {
+    type: types.HIDE_MODAL_CONFIG_NOTIFY,
+    payload: {
+      data,
+      callback,
+    },
+  };
+};

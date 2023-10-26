@@ -47,7 +47,7 @@ export const updateAdsQuota = data => {
 
 
 export const getReportApi = (data, tiktok_account_id) => {
-  console.log(data, tiktok_account_id ,"getReportApi data, tiktok_account_id");
+  console.log(data, tiktok_account_id, "getReportApi data, tiktok_account_id");
   return axiosService.get(urlServerTiktok + '/api/v1/report/get/' + tiktok_account_id, {
     params: {
       order_field: data.order_field,
@@ -62,5 +62,41 @@ export const getReportApi = (data, tiktok_account_id) => {
       filtering: data.filtering,
       metrics: data.metrics,
     }
+  });
+};
+
+
+export const updateCampaginStatus = (data, tiktok_account_id) => {
+  console.log(data, "updateCampaginStatus");
+  return axiosService.post(urlServerTiktok + '/api/v1/campaigns/status/' + tiktok_account_id, {
+    advertiser_id: data.advertiser_id,
+    belong_to_atosa: data.belong_to_atosa,
+    campaign_ids: data.ids,
+    operation_status: data.operation_status,
+  });
+};
+
+export const updateAdgroupStatus = (data, tiktok_account_id) => {
+  return axiosService.post(urlServerTiktok + '/api/v1/ads_groups/status/' + tiktok_account_id, {
+    advertiser_id: data.advertiser_id,
+    belong_to_atosa: data.belong_to_atosa,
+    campaign_ids: data.ids,
+    operation_status: data.operation_status,
+  });
+};
+
+export const updateAdsStatus = (data, tiktok_account_id) => {
+  return axiosService.post(urlServerTiktok + '/api/v1/ads/status/' + tiktok_account_id, {
+    advertiser_id: data.advertiser_id,
+    belong_to_atosa: data.belong_to_atosa,
+    campaign_ids: data.ids,
+    operation_status: data.operation_status,
+  });
+};
+
+export const createAutomatedRule = (data, tiktok_account_id) => {
+  return axiosService.post(urlServerTiktok + '/api/v1/auto_ads/automated_rule/create/' + tiktok_account_id, {
+    advertiser_id: data.advertiser_id,
+    rules: data.rules
   });
 };

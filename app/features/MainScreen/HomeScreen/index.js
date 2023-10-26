@@ -47,6 +47,9 @@ import LineChartCustom from '../../../components/Chart/LineChart';
 import moment from 'moment';
 import ModalScrollBottom from '../../../components/Modal/ModalScrollBottom';
 import ProductList from './components/ProductList';
+import ModalConfigNotify from '../../../components/Modal/ModalConfigNotify';
+import { addDeviceTokenApi } from '../../../apis/account';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -155,13 +158,34 @@ const HomeScreen = props => {
     async function fetchData() {
       const info = await getItem('userInfo');
       setUserInfo(info);
+
+      try {
+        let fcm_token = await AsyncStorage.getItem("fcm_token");
+        const response = await addDeviceTokenApi(fcm_token);
+
+        console.log(response.data, "response add device token");
+      } catch (error) {
+        console.log(error.data, "#1321 error");
+        console.log(error, "#1321 error");
+      }
     }
     fetchData();
   }, []);
 
   useEffect(() => {
-    if (currentAdsAccount && currentShop && currentShop.id) {
-      dispatch(getReport({}, currentShop.id));
+
+    if (currentAdsAccount && currentAdsAccount.advertiser_id && currentShop && currentShop.id) {
+      const data = {
+        order_type: "DESC",
+        page_size: 10,
+        page: 1,
+        advertiser_id: currentAdsAccount.advertiser_id,
+        report_type: "BASIC",
+        start_date: "2023-10-10",
+        end_date: "2023-10-25",
+        filtering: []
+      };
+      dispatch(getReport(data, currentShop.id));
     }
   }, [currentAdsAccount]);
 
@@ -563,7 +587,7 @@ const HomeScreen = props => {
           </View> */}
 
           <View style={styles.boxStatistical}>
-            <ProductList data={report[optionReport]} optionAdsList={optionReport} setOptionAdsList={setOptionReport}/>
+            <ProductList data={report[optionReport]} optionAdsList={optionReport} setOptionAdsList={setOptionReport} />
           </View>
 
         </ScrollView>

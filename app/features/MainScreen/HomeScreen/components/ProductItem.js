@@ -19,13 +19,16 @@ import {
   formatPercent,
 } from '../../../../helpers/formatNumber';
 import { ScrollView } from 'react-native';
+import { showModalConfig, showModalConfigNotify, updateAdsState } from '../../actions';
 
 const ProductItem = props => {
   const { item, onFetchDataAdsList, handleCheckAds, optionAdsList } = props;
   const currentShop = useSelector(store => store.account.currentShop);
+  const currentAdsAccount = useSelector(store => store.account.currentAdsAccount);
+
   const checked = item.checked ? true : false;
   const [adsStatus, setAdsStatus] = useState(
-    true
+    item[optionAdsList].operation_status == "ENABLE"
   );
   const dispatch = useDispatch();
 
@@ -33,25 +36,30 @@ const ProductItem = props => {
     handleCheckAds(item.campaign?.campaignid, !checked);
   };
 
+  console.log(item.spend, item, "item.cpm");
+
   const onChangeState = (status, id) => {
-    // setAdsStatus(!adsStatus);
-    // let state = 'ongoing';
-    // if (status === 'ongoing') {
-    //   state = 'paused';
-    // } else {
-    //   state = 'ongoing';
-    // }
-    // const data = {
-    //   id: currentShop?._id,
-    //   campaign_ids: [id],
-    //   state,
-    // };
+    setAdsStatus(!adsStatus);
+    let state = 'ENABLE';
+    if (status === 'ENABLE') {
+      state = 'DISABLE';
+    } else {
+      state = 'ENABLE';
+    }
 
-    // const callbackSuccess = () => {
-    //   onFetchDataAdsList();
-    // };
+    const data = {
+      type: optionAdsList,
+      advertiser_id: currentAdsAccount.advertiser_id,
+      belong_to_atosa: currentAdsAccount.belong_to_atosa,
+      ids: [id],
+      operation_status: state,
+    };
 
-    // dispatch(updateAdsState(data, { callbackSuccess }));
+    const callbackSuccess = () => {
+      //onFetchDataAdsList();
+    };
+
+    dispatch(updateAdsState(data, currentShop?.id, { callbackSuccess }));
   };
 
   const renderStatus = status => {
@@ -92,8 +100,8 @@ const ProductItem = props => {
     }
   };
 
-  const showModalUpdate = id => {
-    // dispatch(showModalUpdateAds([id]));
+  const showModalConfig = id => {
+    dispatch(showModalConfigNotify([id]));
   };
 
   return (
@@ -111,8 +119,13 @@ const ProductItem = props => {
                 />
               )}
               <Text style={styles.productName} numberOfLines={1}>
-                {item[optionAdsList][optionAdsList+"_name"]}
+                {item[optionAdsList][optionAdsList + "_name"]} hìnhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
               </Text>
+              <TouchableOpacity
+                onPress={() => showModalConfig(item[optionAdsList].id)}
+                style={{ width: 50, backgroundColor: COLOR.primaryLight, alignItems: 'center', borderRadius: 10, padding: 3 }}>
+                <Image style={{ width: 20, height: 20 ,tintColor:COLOR.white}} source={require(`../../../../assets/image/icon_tabar_4.png`)} />
+              </TouchableOpacity>
             </View>
             <View
               style={{
@@ -126,15 +139,19 @@ const ProductItem = props => {
                   marginLeft: -10,
                 }}>
                 <Switch
-                  style={{ margin: Platform.OS === 'ios' ? 10 : 0 }}
+                  style={{ marginHorizontal: Platform.OS === 'ios' ? 10 : 10 }}
                   value={adsStatus}
-
+                  onValueChange={() =>
+                    onChangeState(
+                      item[optionAdsList].operation_status,
+                      item[optionAdsList][optionAdsList + "_id"]
+                    )
+                  }
                 />
                 <Text></Text>
               </View>
               <Text style={styles.textDes}>
                 Ngân sách : 1.000.000 đ {'(Không giới hạn)'}
-
               </Text>
             </View>
             <ScrollView horizontal style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -246,7 +263,8 @@ const styles = StyleSheet.create({
   productName: {
     fontWeight: 'bold',
     color: COLOR.primary,
-    paddingRight: 50,
+    paddingRight: 10,
+    flexGrow: 1
   },
   textDes: {
     color: COLOR.grey,

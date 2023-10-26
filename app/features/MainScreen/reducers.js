@@ -11,6 +11,7 @@ const initialState = {
   currentAdsAccount: null,
   showModalSelectShop: false,
   showModalSelectAdsAccount: false,
+  showModalConfigNotify: false,
   shopReportHome: {},
   adsReportHome: {},
   adsPerformance: {},
@@ -109,6 +110,17 @@ const accountReducer = (state = initialState, action) => {
         ...state,
         showModalSelectAdsAccount: false,
       };
+    case types.SHOW_MODAL_CONFIG_NOTIFY:
+      return {
+        ...state,
+        showModalConfigNotify: true,
+      };
+    case types.HIDE_MODAL_CONFIG_NOTIFY:
+      return {
+        ...state,
+        showModalConfigNotify: false,
+      };
+
     case types.GET_REPORT:
       return {
         ...state
@@ -116,7 +128,6 @@ const accountReducer = (state = initialState, action) => {
     case types.GET_REPORT_DONE:
       {
         const report_data = action.payload.data;
-
         return {
           ...state,
           report: report_data,

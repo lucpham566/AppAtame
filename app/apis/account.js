@@ -19,3 +19,16 @@ export const getTiktokAccountListApi = () => {
 export const getAdsAccountListApi = (tiktok_account_id) => {
   return axiosService.get(urlServerTiktok + '/api/' + 'v1/ads_accounts/' + tiktok_account_id);
 };
+
+export const addDeviceTokenApi = (device_token) => {
+  return axiosService.post(urlServerTiktok + '/api/' + 'v1/user_role/device', {
+    device_token
+  });
+};
+
+
+export const removeDeviceTokenApi = (device_token) => {
+  return axiosService.delete(urlServerTiktok + '/api/' + 'v1/ads_accounts/device', {
+    device_token
+  });
+};

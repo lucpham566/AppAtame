@@ -12,6 +12,7 @@ import {
   GET_REPORT,
   GET_SHOP_LIST,
   GET_SHOP_REPORT_HOME,
+  UPDATE_ADS_STATE,
 } from './constants';
 import { getAdsAccountListApi, getGoiSanPhamApi, getShopListApi, getTiktokAccountListApi } from './../../apis/account';
 import {
@@ -23,7 +24,7 @@ import {
   getShopListDone,
   getShopReportHomeDone,
 } from './actions';
-import { getReportApi, getShopReportApi } from '../../apis/tongQuan';
+import { getReportApi, getShopReportApi, updateAdgroupStatus, updateAdsStatus, updateCampaginStatus } from '../../apis/tongQuan';
 import { getAdsPerformanceApi, getAdsReportApi } from '../../apis/ads';
 
 function* watchGetListShopAction({ payload }) {
@@ -104,17 +105,15 @@ function* watchGetAdsPerformanceAction({ payload }) {
 
 function* watchGetReportAction({ payload }) {
   const { data, tiktok_account_id } = payload;
-  console.log("vào sagaa watchGetReportAction ", tiktok_account_id);
   const query_params = {
-    order_type: "DESC",
-    page_size: 10,
-    page: 1,
-    advertiser_id: "7237386208756695041",
-    type: "campaign_id",
-    report_type: "BASIC",
-    start_date: "2023-10-10",
-    end_date: "2023-10-17",
-    filtering: [],
+    order_type: data.order_type,
+    page_size: data.page_size,
+    page: data.page,
+    advertiser_id: data.advertiser_id,
+    report_type: data.report_type,
+    start_date: data.start_date,
+    end_date: data.end_date,
+    filtering: data.filtering,
     metrics: ["spend", "cpc", "cpm", "impressions", "clicks", "ctr", "conversion", "cost_per_conversion", "conversion_rate"]
   }
 
@@ -131,13 +130,48 @@ function* watchGetReportAction({ payload }) {
       console.log(res_ads.data.data, "res_ads watchGetReportAction");
 
       yield put(getReportDone({
-        campaign : res_campaign.data.data.list,
-        adgroup : res_adgroup.data.data.list,
-        ads : res_ads.data.data.list,
+        campaign: res_campaign.data.data.list,
+        adgroup: res_adgroup.data.data.list,
+        ads: res_ads.data.data.list,
       }));
     }
   } catch (error) {
     console.log(error?.response?.data ? error?.response?.data : error, "watchGetReportAction");
+  }
+}
+
+function* watchUpdateAdsStateAction({ payload }) {
+  const { data } = payload;
+  const { type } = data;
+  console.log("vào saga watchUpdateAdsStateAction", data);
+  try {
+    let res = null;
+    switch (type) {
+      case "campaign":
+        res = yield call(updateCampaginStatus, data, payload.tiktok_account_id);
+        break;
+      case "adgroup":
+        res = yield call(updateAdgroupStatus, data, payload.tiktok_account_id);
+        break;
+      case "ads":
+        res = yield call(updateAdsStatus, data, payload.tiktok_account_id);
+        break;
+      default:
+        break;
+    }
+    console.log("vào saga watchUpdateAdsStateAction res", res.data);
+
+
+    if (res.data && !res.data.error) {
+      payload.callback?.callbackSuccess();
+    }
+  } catch (error) {
+    console.log(error?.response?.data, "#1 error");
+    console.log(error, "#1 error");
+    Toast.show({
+      type: 'error',
+      text1: 'Cập nhật trạng thái thất bại',
+    });
   }
 }
 
@@ -149,6 +183,8 @@ export function* accountSaga() {
   yield takeEvery(GET_ADS_REPORT_HOME, watchGetAdsReportHomeAction);
   yield takeEvery(GET_ADS_PERFORMANCE, watchGetAdsPerformanceAction);
   yield takeEvery(GET_REPORT, watchGetReportAction);
+  yield takeEvery(UPDATE_ADS_STATE, watchUpdateAdsStateAction);
+
 }
 
 export default accountSaga;
