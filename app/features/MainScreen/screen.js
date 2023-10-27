@@ -32,7 +32,7 @@ const TabScreen = () => {
             case 'BaoCaoHieuQuaScreen':
               source_image = require('../../assets/image/report.png');
               break;
-            case 'QuangCaoScreen':
+            case 'CauHinhScreen':
               source_image = require('../../assets/image/ads.png');
               break;
             case 'CongCuTuKhoaScreen':
@@ -66,8 +66,8 @@ const TabScreen = () => {
             case 'BaoCaoHieuQuaScreen':
               label = 'Báo cáo';
               break;
-            case 'QuangCaoScreen':
-              label = 'Quảng cáo';
+            case 'CauHinhScreen':
+              label = 'Cấu hình';
               break;
             case 'CongCuTuKhoaScreen':
               label = 'Công cụ TK';
@@ -98,7 +98,7 @@ const TabScreen = () => {
 
       {/* <Tab.Screen name="TongQuanScreen" component={TongQuanScreen} /> */}
       <Tab.Screen name="BaoCaoHieuQuaScreen" component={BaoCaoHieuQuaScreen} />
-      <Tab.Screen name="QuangCaoScreen" component={QuangCaoScreen} />
+      <Tab.Screen name="CauHinhScreen" component={QuangCaoTimKiemScreen} />
       {/* <Tab.Screen
         name="QuangCaoKhamPhaScreen"
         component={QuangCaoKhamPhaScreen}

@@ -45,7 +45,7 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
   const currentShop = useSelector(store => store.account.currentShop);
   const adsReport = useSelector(store => store.baoCao.adsReport);
   const productAdsListRe = useSelector(store => store.baoCao.productAdsList);
-  const [productAdsList, setProductAdsList] = useState([]);
+  const [productAdsList, setProductAdsList] = useState([1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
   const [optionFilter, setOptionFilter] = useState('real_time');
   const [optionAdsList, setOptionAdsList] = useState('search');
   const [productName, setProductName] = useState('');
@@ -54,7 +54,6 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setProductAdsList(productAdsListRe);
   }, [productAdsListRe]);
 
   useEffect(() => {
@@ -104,7 +103,6 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
       return name.includes(nameCompare);
     });
 
-    setProductAdsList(productAdsListFilter);
   }, [productName]);
 
   const onFetchDataAdsList = () => {
@@ -188,7 +186,6 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
       }
       return { ...i };
     });
-    setProductAdsList([...newData]);
   };
 
   const onchangeStateAdsMutil = () => {
@@ -228,101 +225,19 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
 
   return (
     <Container>
-      {/* <HeaderTab
+      <HeaderTab
         renderItemLeft={renderItemLeft()}
-        title="Quảng cáo tìm kiếm"
+        title="Cấu hình thông báo"
         navigation={navigation}
-      /> */}
-      <Content
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <Form
-          style={{
-            flexDirection: 'row',
-            padding: 5,
-            borderBottomWidth: 1,
-            borderBottomColor: COLOR.light,
-            alignItems: 'center',
-          }}>
-          <View
-            style={{
-              flex: 1,
-            }}>
-            <TouchableOpacity
-              onPress={() => {
-                dispatch(showModalSelectShop());
-              }}
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                padding: 10,
-              }}
-              transparent
-              block>
-              {/* <Icon name='arrow-back' /> */}
-              <Text
-                style={{ fontWeight: 'bold', color: COLOR.greyDark }}
-                numberOfLines={1}>
-                <Image
-                  style={{ width: 16, height: 16 }}
-                  source={require('../../assets/image/store1.png')}
-                />{' '}
-                {currentShop.username}{' '}
-                <Icon name="caret-down" color={COLOR.grey} size={16} />
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{ alignItems: 'center', paddingRight: 10 }}>
-            <TouchableOpacity
-              style={{ flexDirection: 'row', alignItems: 'center' }}
-              onPress={gotoAdsCreationScreen}>
-              <Text style={{ marginRight: 5, color: COLOR.primary }}>
-                Tạo chiến dịch
-              </Text>
-              <View
-                style={{
-                  backgroundColor: COLOR.primary,
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  style={{ width: 16, height: 16 }}
-                  source={require('../../assets/image/plus_white.png')}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Form>
+      />
+      <Content>
 
-        <View
-          style={[
-            styles.boxOption,
-            { flexDirection: 'row', justifyContent: 'space-between' },
-          ]}>
-          {renderListOptionFilter()}
-        </View>
-
-        <View style={styles.boxSection}>
-          <Text
-            style={{
-              paddingHorizontal: 17,
-              fontSize: 16,
-              marginBottom: 5,
-              fontWeight: 'bold',
-            }}>
-            Danh sách quảng cáo
-          </Text>
-          <ProductList
-            data={productAdsList}
-            onFetchDataAdsList={onFetchDataAdsList}
-            navigation={navigation}
-            handleCheckAds={handleCheckAds}
-          />
-        </View>
+        <ProductList
+          data={productAdsList}
+          onFetchDataAdsList={onFetchDataAdsList}
+          navigation={navigation}
+          handleCheckAds={handleCheckAds}
+        />
       </Content>
       {productAdsList.filter(i => i.checked === true).length > 0 ? (
         <View style={{ padding: 10, flexDirection: 'row' }}>

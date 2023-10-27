@@ -119,7 +119,7 @@ const ProductItem = props => {
                 />
               )}
               <Text style={styles.productName} numberOfLines={1}>
-                {item[optionAdsList][optionAdsList + "_name"]} hìnhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                {item[optionAdsList][optionAdsList + "_name"]}
               </Text>
               <TouchableOpacity
                 onPress={() => showModalConfig(item[optionAdsList].id)}

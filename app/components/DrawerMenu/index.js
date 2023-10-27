@@ -12,20 +12,20 @@ import {
   View,
 } from 'native-base';
 import * as React from 'react';
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import styles from './styles';
-import {ImageBackground, Text, TouchableOpacity} from 'react-native';
-import {COLOR} from './../../theme/color';
+import { ImageBackground, Text, TouchableOpacity } from 'react-native';
+import { COLOR } from './../../theme/color';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {useState, useEffect} from 'react';
-import {getItem} from '../../commons/AsyncStorageUtils';
-import {formatMoney} from '../../helpers/formatNumber';
-import {useDispatch} from 'react-redux';
-import {logout} from '../../features/LoginScreen/actions';
-import {showModalPrompt} from '../Modal/ModalPrompt/actions';
+import { useState, useEffect } from 'react';
+import { getItem } from '../../commons/AsyncStorageUtils';
+import { formatMoney } from '../../helpers/formatNumber';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../features/LoginScreen/actions';
+import { showModalPrompt } from '../Modal/ModalPrompt/actions';
 
 const DrawerMenu = props => {
-  const {navigation} = props;
+  const { navigation } = props;
   const [autoApDungGoi, setAutoApDungGoi] = useState(false);
   const [userInfo, setUserInfo] = useState({});
 
@@ -71,7 +71,7 @@ const DrawerMenu = props => {
         //   },
         // },
         {
-          title: 'Quản lý shop',
+          title: 'Tài khoản quản lý',
           icon: 'inbox',
           onPressButton: () => {
             navigation.navigate('QuanLyShopScreen');
@@ -105,7 +105,7 @@ const DrawerMenu = props => {
         callbackSuccess: () => {
           navigation.reset({
             index: 0,
-            routes: [{name: 'LoginScreen'}],
+            routes: [{ name: 'LoginScreen' }],
           });
         },
       }),
@@ -135,7 +135,7 @@ const DrawerMenu = props => {
   });
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <ImageBackground
         style={{
           width: '100%',
@@ -148,17 +148,15 @@ const DrawerMenu = props => {
           <Thumbnail
             style={styles.avatar}
             square
-            source={{
-              uri: 'https://inkythuatso.com/uploads/thumbnails/800/2021/11/logo-shopee-inkythuatso-2-01-24-14-52-10.jpg',
-            }}
+            source={require(`../../assets/image/tiktok_banner.png`)}
           />
           <View style={styles.userInfo}>
-            <Text style={{marginBottom: 5}}>
-              <Text style={{fontWeight: 'bold', color: COLOR.white}}>
+            <Text style={{ marginBottom: 5 }}>
+              <Text style={{ fontWeight: 'bold', color: COLOR.white }}>
                 {userInfo?.display_name}
               </Text>
             </Text>
-            <Text style={{color: COLOR.white}}>
+            <Text style={{ color: COLOR.white }}>
               <Icon
                 style={{
                   borderWidth: 2,
@@ -173,9 +171,9 @@ const DrawerMenu = props => {
           </View>
         </View>
       </ImageBackground>
-      <View style={{flex: 1}}>
-        <View style={{padding: 15, backgroundColor: '#F1F1F1'}}>
-          <View style={{marginBottom: 10}}>
+      <View style={{ flex: 1 }}>
+        <View style={{ padding: 15, backgroundColor: '#F1F1F1' }}>
+          <View style={{ marginBottom: 10 }}>
             <Text>
               Gói :{' '}
               <Text
@@ -204,8 +202,8 @@ const DrawerMenu = props => {
         onPress={() => {
           dispatch(
             showModalPrompt(
-              {title: 'Thông báo', text: 'Bạn có chắc chắn đăng xuất'},
-              {callbackSuccess: () => onLogout()},
+              { title: 'Thông báo', text: 'Bạn có chắc chắn đăng xuất' },
+              { callbackSuccess: () => onLogout() },
             ),
           );
         }}
@@ -218,7 +216,7 @@ const DrawerMenu = props => {
             borderRadius: 6,
           },
         ]}>
-        <Text style={[styles.textButton, {color: 'white'}]}>Đăng xuất</Text>
+        <Text style={[styles.textButton, { color: 'white' }]}>Đăng xuất</Text>
       </Button>
       {/* <DrawerContentScrollView
         style={{padding: 0}}

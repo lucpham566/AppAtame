@@ -60,64 +60,16 @@ const ProductList = props => {
 
   const modalSellectSort = useRef(null);
 
-  const onOpen = () => {
-    modalSellectSort.current?.open();
-  };
-
   useEffect(() => {
     setProductAdsList(data);
   }, [data]);
-
-  // Tìm kiếm
-  useEffect(() => {
-    if (nameSearch) {
-      const productAdsListFilter = filterProductHelper(data, nameSearch);
-      setProductAdsList(productAdsListFilter);
-    } else {
-      setProductAdsList(data);
-    }
-  }, [nameSearch]);
-
-  // Sắp xếp
-  useEffect(() => {
-    const compare = (a, b) => {
-      switch (optionOrder) {
-        case 'nameASC':
-          if (a.product.name.toLowerCase() > b.product.name.toLowerCase()) {
-            return 1;
-          } else {
-            return -1;
-          }
-        case 'nameDESC':
-          if (a.product.name.toLowerCase() > b.product.name.toLowerCase()) {
-            return -1;
-          } else {
-            return 1;
-          }
-        case 'gmvASC':
-          return a.report.direct_gmv - b.report.direct_gmv;
-        case 'gmvDESC':
-          return b.report.direct_gmv - a.report.direct_gmv;
-        case 'clickASC':
-          return a.report.click - b.report.click;
-        case 'clickDESC':
-          return b.report.click - a.report.click;
-        default:
-          return 0;
-      }
-    };
-    const productAdsListFilter = [...productAdsList].sort((a, b) =>
-      compare(a, b),
-    );
-    setProductAdsList(productAdsListFilter);
-  }, [optionOrder]);
 
   const rowRenderer = (type, data) => {
     switch (type) {
       case ViewTypes.ITEM:
         return (
           <ProductItem
-            item={data}
+            //item={data}
             onFetchDataAdsList={onFetchDataAdsList}
             navigation={navigation}
             handleCheckAds={handleCheckAds}
@@ -214,80 +166,12 @@ const ProductList = props => {
       </Form> */}
       <View
         style={{
-          paddingHorizontal: 17,
           backgroundColor: COLOR.white,
         }}>
-        <Form
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <View
-            style={{
-              fontSize: 13,
-              borderWidth: 1,
-              borderColor: COLOR.greyLight,
-              borderRadius: 5,
-              paddingHorizontal: 10,
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginRight: 10,
-            }}>
-            <Image
-              style={{width: 16, height: 16}}
-              source={require('../../../assets/image/search.png')}
-            />
-            <Input
-              placeholder="Tìm kiếm"
-              style={{
-                fontSize: 13,
-                height: 40,
-              }}
-              numberOfLines={1}
-              onChangeText={setNameSearch}
-            />
-          </View>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              padding: 12,
-              backgroundColor: COLOR.light,
-              borderRadius: 4,
-              alignItems: 'center',
-              width: 120,
-            }}
-            onPress={onOpen}>
-            <Image
-              style={{width: 16, height: 16, marginRight: 5}}
-              source={require('../../../assets/image/sort.png')}
-            />
-            <Text
-              numberOfLines={1}
-              style={{color: COLOR.grey, fontSize: 14, marginRight: 3}}>
-              {dataOptionOrder.find(i => i.value === optionOrder).name}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={toggleModalFilter}
-            style={{
-              flexDirection: 'row',
-              padding: 12,
-              backgroundColor: COLOR.light,
-              borderRadius: 4,
-              alignItems: 'center',
-              marginLeft: 10,
-            }}>
-            <Text style={{color: COLOR.black, fontSize: 13}}>
-              <Icon size={18} color={COLOR.black} name={'filter'} /> Lọc
-            </Text>
-          </TouchableOpacity>
-        </Form>
         <Text style={{marginVertical: 5, fontSize: 14, color: COLOR.grey}}>
           Có tất cả {productAdsList.length} quảng cáo
         </Text>
-        <View style={{minHeight: 1, minWidth: 1, maxHeight: 500}}>
+        <View style={{minHeight: 1, minWidth: 1, flex: 1}}>
           <RecyclerListView
             ref={listView}
             nestedScrollEnabled={true}
@@ -297,12 +181,12 @@ const ProductList = props => {
             canChangeSize={true}
           />
         </View>
-        <ModalFilterCampaign
+        {/* <ModalFilterCampaign
           toggleModalFilter={toggleModalFilter}
           showModalFilter={showModalFilter}
           dataProductAds={data}
           setProductAdsList={setProductAdsList}
-        />
+        /> */}
       </View>
     </>
   );

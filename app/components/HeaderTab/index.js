@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Container,
   Header,
@@ -15,17 +15,18 @@ import {
   Thumbnail,
   View,
 } from 'native-base';
-import {COLOR} from '../../theme';
-import {useDispatch, useSelector} from 'react-redux';
+import { COLOR } from '../../theme';
+import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {StatusBar, TouchableOpacity, Image} from 'react-native';
-import {showModalSelectShop} from '../../features/MainScreen/actions';
+import { StatusBar, TouchableOpacity, Image } from 'react-native';
+import { showModalSelectShop } from '../../features/MainScreen/actions';
 
 const HeaderTab = props => {
-  const {title} = props;
-  const {renderItemLeft, renderItemRight} = props;
+  const { title } = props;
+  const { renderItemLeft, renderItemRight } = props;
   const dispatch = useDispatch();
   const currentShop = useSelector(store => store.account.currentShop);
+  const currentAdsAccount = useSelector(store => store.account.currentAdsAccount);
 
   return (
     <Header
@@ -51,7 +52,7 @@ const HeaderTab = props => {
           {title}
         </Title>
         {/* <View>{renderItemLeft}</View> */}
-
+        {/* 
         <View>
           {renderItemRight ? (
             renderItemRight
@@ -70,18 +71,17 @@ const HeaderTab = props => {
               transparent
               block>
               <Text
-                style={{fontWeight: 'bold', color: COLOR.greyDark}}
+                style={{ fontWeight: 'bold', color: COLOR.greyDark, maxWidth: 100 }}
                 numberOfLines={1}>
                 <Image
-                  style={{width: 16, height: 16}}
+                  style={{ width: 16, height: 16 }}
                   source={require('../../assets/image/store1.png')}
                 />{' '}
-                {currentShop.username}{' '}
-                <Icon name="caret-down" color={COLOR.grey} size={16} />
+                {currentAdsAccount.name}{' '}adssdadsadssd
               </Text>
             </TouchableOpacity>
           )}
-        </View>
+        </View> */}
       </View>
       {/* <Left></Left>
       <Body style={{backgroundColor: 'red'}}>
