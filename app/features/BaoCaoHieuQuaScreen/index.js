@@ -211,7 +211,7 @@ const BaoCaoHieuQuaScreen = ({ theme, navigation }) => {
         <ProductItem
           onFetchDataAdsList={onFetchDataAdsList}
           item={item}
-          key={item.campaign?.campaignid}
+          key={index}
         />
       );
     });
