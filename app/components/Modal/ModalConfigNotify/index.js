@@ -1,6 +1,6 @@
 import { Button, Form, Item, Input, Label, Picker } from 'native-base';
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Modal from 'react-native-modal';
 import Toast from 'react-native-toast-message';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,14 +11,23 @@ import { updateAdsQuota } from '../../../features/BaoCaoHieuQuaScreen/actions';
 import { hideModalConfigNotify } from '../../../features/MainScreen/actions';
 import { createAutomatedRule } from '../../../apis/tongQuan';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ConfigConditionItem from './ConfigConditionItem';
+import { hideLoadingGlobal, showLoadingGlobal } from '../../../features/globalFeatures/actions';
 
 function ModalConfigNotify(props) {
   const show = useSelector(store => store.account.showModalConfigNotify);
-  const [rangeType, setRangeType] = useState('TODAY');
-  const [matchType, setMatchType] = useState('TODAY');
-  const [value1, setValue1] = useState("0");
-  const [value2, setValue2] = useState("0");
-  const [subjectType, setSubjectType] = useState("spend");
+  const [conditionList, setConditionList] = useState([{
+    "subject_type": "spend",
+    "range_type": 'TODAY',
+    "calculation_type": "OF_EACH_OBJECT",
+    "match_type": "GT",
+    "values": ["0"]
+  }]);
+  const [applyObject, setApplyObject] = useState({
+    pre_condition_type: "ALL_ACTIVE_CAMPAIGN"
+  });
+
+  const [ruleName, setRuleName] = useState("Quy tắc mới");
 
   const currentShop = useSelector(store => store.account.currentShop);
   const currentAdsAccount = useSelector(store => store.account.currentAdsAccount);
@@ -40,6 +49,7 @@ function ModalConfigNotify(props) {
 
   const toggleModal = () => {
     reset();
+    onReset();
     dispatch(hideModalConfigNotify());
   };
 
@@ -83,12 +93,7 @@ function ModalConfigNotify(props) {
   };
 
   const onSubmitData = async () => {
-    let values = [];
-    if (matchType === "BETWEEN") {
-      values = [value1];
-    } else {
-      values = [value1, value2];
-    }
+    dispatch(showLoadingGlobal());
     const data = {
       "advertiser_id": currentAdsAccount.advertiser_id,
       "rules": [
@@ -114,7 +119,7 @@ function ModalConfigNotify(props) {
               "dimension_ids": [
                 "1779911139427329"
               ],
-              "pre_condition_type": "SELECTED"
+              "pre_condition_type": applyObject.pre_condition_type
             }
           ],
           "actions": [
@@ -136,28 +141,67 @@ function ModalConfigNotify(props) {
               }
             }
           ],
-          "conditions": [
-            {
-              "subject_type": subjectType,
-              "range_type": rangeType,
-              "calculation_type": "OF_EACH_OBJECT",
-              "match_type": matchType,
-              "values": values
-            }
-          ]
+          "conditions": conditionList
         }
       ]
     }
-
     try {
-      const response = await createAutomatedRule(data, currentShop.id)
-      console.log(response, "response. đâfdsasafd");
+
+      const response = await createAutomatedRule(data, currentShop.id);
+      if (response.data && response.data.code == 0) {
+        Toast.show({
+          type: 'success',
+          text1: 'Tạo thành công',
+        });
+      }
+      else {
+        console.log("vào show dasadds");
+
+        Toast.show({
+          type: 'error',
+          text1: 'Tạo thất bại error_id ' + response.data?.error_id,
+          text2: response.data.message,
+        });
+      }
+      console.log(response.data, "response. đâfdsasafd");
+      toggleModal();
+
     } catch (error) {
       console.log(error?.response?.data, "error. #1209");
       console.log(error, "error. #1209");
+
+      Toast.show({
+        type: 'error',
+        text1: 'Tạo thất bại' + error?.response?.error_id,
+      });
     }
 
+    dispatch(hideLoadingGlobal());
+
   };
+
+  const baseDataConditon = {
+    "subject_type": "spend",
+    "range_type": 'TODAY',
+    "calculation_type": "OF_EACH_OBJECT",
+    "match_type": "GT",
+    "values": ["0"]
+  }
+
+  const addCondition = () => {
+
+    const newList = [...conditionList];
+    newList.push(baseDataConditon);
+    setConditionList(newList);
+  }
+
+  const setCondition = (index, data) => {
+
+    const newList = [...conditionList];
+    newList[index] = data;
+
+    setConditionList(newList);
+  }
 
   const data_subject_type = [
     {
@@ -183,6 +227,24 @@ function ModalConfigNotify(props) {
       value: "conversion_rate",
     },
   ]
+
+  const data_apply_objects = [
+    // {
+    //   title: "Chọn đối tượng",
+    //   value: "SELECTED",
+    // },
+    {
+      title: "Tất cả chiến dịch đang hoạt động",
+      value: "ALL_ACTIVE_CAMPAIGN",
+    }, {
+      title: "Tất cả nhóm quảng cáo đang hoạt động",
+      value: "ALL_ACTIVE_AD_GROUP",
+    }, {
+      title: "Tất cả quảng cáo đang hoạt động",
+      value: "ALL_ACTIVE_AD",
+    }
+  ]
+
   const renderPickerSubjectType = () => {
     return data_subject_type.map((i, index) => {
       return (<Picker.Item
@@ -194,13 +256,89 @@ function ModalConfigNotify(props) {
     })
   }
 
+  const renderApplyObject = () => {
+    return data_apply_objects.map((i, index) => {
+      return (<Picker.Item
+        key={index}
+        style={{ fontSize: 13 }}
+        label={i.title}
+        value={i.value}
+      />)
+    })
+  }
+
+  const renderConditionList = () => {
+    return conditionList.map((i, index) => {
+      return (<ConfigConditionItem setCondition={setCondition} item={i} key={index} index={index} />)
+    })
+  }
+
+  const OnSetApplyObject = (value) => {
+    setApplyObject({
+      pre_condition_type: value
+    });
+  }
+
+  const onReset = () => {
+    setConditionList([
+      {
+        "subject_type": "spend",
+        "range_type": 'TODAY',
+        "calculation_type": "OF_EACH_OBJECT",
+        "match_type": "GT",
+        "values": ["0"]
+      }
+    ])
+
+    setRuleName("Quy tắc mới");
+  }
+
   return (
     <Modal isVisible={show}>
       <View style={styles.container}>
         <Text style={styles.title}>
-          Chỉnh sửa quy tắc
+          Thêm quy tắc
         </Text>
-        <Form style={{ width: '100%', marginVertical: 10 }}>
+        <Form style={{ width: '100%', marginVertical: 10, flex: 1 }}>
+          <ScrollView>
+            <Text style={{ marginVertical: 5, color: COLOR.primary, fontWeight: 'bold', fontSize: 16 }}>
+              Tên quy tắc
+            </Text>
+            <Input style={{
+              borderColor: COLOR.greyLight, borderWidth: 1,
+              padding: 0, borderRadius: 5, paddingHorizontal: 10
+            }}
+              value={ruleName} onChangeText={setRuleName} />
+            <Text style={{ marginVertical: 5, color: COLOR.primary, fontWeight: 'bold', fontSize: 16 }}>
+              Áp dụng quy tắc cho
+            </Text>
+            <View style={{
+              borderColor: COLOR.greyLight, borderWidth: 1,
+              padding: 0, borderRadius: 5
+            }}>
+              <Picker
+                style={{ padding: 0 }}
+                mode="dropdown"
+                iosIcon={<Icon name="caret-down" color={COLOR.grey} size={16} />}
+                placeholder="chọn biểu thức"
+                placeholderStyle={{ color: '#bfc6ea' }}
+                selectedValue={applyObject.pre_condition_type}
+                onValueChange={OnSetApplyObject}
+                placeholderIconColor="#007aff">
+                {renderApplyObject()}
+              </Picker>
+            </View>
+
+            <Text style={{ marginVertical: 5, color: COLOR.primary, fontWeight: 'bold', fontSize: 16 }}>
+              Điều kiện
+            </Text>
+            {renderConditionList()}
+            <TouchableOpacity
+              onPress={() => addCondition()}
+              style={{ width: 200, backgroundColor: COLOR.primaryLight, alignItems: 'center', borderRadius: 10, padding: 3 }}>
+              <Text>Thêm điều kiện</Text>
+            </TouchableOpacity>
+          </ScrollView>
           {/* {option === 'total_quota' ? (
             <>
               <Controller
@@ -248,116 +386,8 @@ function ModalConfigNotify(props) {
               {handleError('daily_quota', errors)}
             </>
           )} */}
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text>Điều kiện</Text>
-            <Picker
-              style={{ padding: 0 }}
-              mode="dropdown"
-              iosIcon={<Icon name="caret-down" color={COLOR.grey} size={16} />}
-              placeholder="chọn biểu thức"
-              placeholderStyle={{ color: '#bfc6ea' }}
-              selectedValue={subjectType}
-              onValueChange={setSubjectType}
-              placeholderIconColor="#007aff">
-              {renderPickerSubjectType()}
-            </Picker>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text>Khoảng thời gian</Text>
-            <Picker
-              style={{ padding: 0 }}
-              mode="dropdown"
-              iosIcon={<Icon name="caret-down" color={COLOR.grey} size={16} />}
-              placeholder="chọn biểu thức"
-              placeholderStyle={{ color: '#bfc6ea' }}
-              selectedValue={rangeType}
-              onValueChange={setRangeType}
-              placeholderIconColor="#007aff">
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"TODAY"}
-                label={"Hôm nay"}
-              />
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"YESTERDAY"}
-                label={"Hôm qua"}
-              />
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"PAST_THREE_DAYS"}
-                label={"3 ngày qua"}
-              />
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"PAST_FIVE_DAYS"}
-                label={"5 ngày qua"}
-              />
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"PAST_SEVEN_DAYS"}
-                label={"7 ngày qua"}
-              />
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"PAST_THIRTY_DAYS"}
-                label={"30 ngày qua"}
-              />
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"LIFETIME"}
-                label={"Trọn đời"}
-              />
-            </Picker>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text>Biểu thức</Text>
-            <Picker
-              style={{ padding: 0 }}
-              mode="dropdown"
-              iosIcon={<Icon name="caret-down" color={COLOR.grey} size={16} />}
-              placeholder="chọn biểu thức"
-              placeholderStyle={{ color: '#bfc6ea' }}
-              selectedValue={matchType}
-              onValueChange={setMatchType}
-              placeholderIconColor="#007aff">
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"GT"}
-                label={"Lớn hơn"}
-              />
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"LT"}
-                label={"Bé hơn"}
-              />
-              <Picker.Item
-                style={{ fontSize: 13 }}
-                value={"BETWEEN"}
-                label={"Trong khoảng"}
-              />
-            </Picker>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text>Giá trị</Text>
-            <Input style={{
-              marginHorizontal: 10, borderColor: COLOR.greyLight, borderWidth: 1,
-              height: 30, padding: 0, borderRadius: 5
-            }}
-              keyboardType="numeric" value={value1} onChangeText={setValue1} />
-            {
-              matchType == "BETWEEN" &&
-              <>
-                <Text>{"-"}</Text>
-                <Input style={{
-                  marginHorizontal: 10, borderColor: COLOR.greyLight, borderWidth: 1,
-                  height: 30, padding: 0, borderRadius: 5
-                }}
-                  keyboardType="numeric" value={value2} onChangeText={setValue2} />
-              </>
-            }
 
-          </View>
+
         </Form>
         <View
           style={{
@@ -379,20 +409,21 @@ function ModalConfigNotify(props) {
           </Button>
         </View>
       </View>
-    </Modal>
+    </Modal >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 10,
     backgroundColor: COLOR.white,
     borderRadius: 5,
+    flex: 1
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: COLOR.grey,
+    color: COLOR.greyDark,
     marginBottom: 3,
     textAlign: 'center',
   },

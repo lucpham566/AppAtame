@@ -20,12 +20,13 @@ import {
 import { showModalUpdateAds } from '../../BaoCaoHieuQuaScreen/actions';
 import { Switch } from 'react-native';
 import { Platform } from 'react-native';
+import moment from 'moment';
 
 const ProductItem = props => {
-  const { item, onFetchDataAdsList, navigation, handleCheckAds } = props;
+  const { item, onFetchDataAdsList, navigation, handleCheckAds, onDeleteRule } = props;
   // const [check, setCheck] = useState(false);
   const currentShop = useSelector(store => store.account.currentShop);
-
+  console.log(item, "Dầdsfa");
   const dispatch = useDispatch();
 
   return (
@@ -37,8 +38,11 @@ const ProductItem = props => {
           <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
+                {/* <Switch
+                  style={{ marginHorizontal: Platform.OS === 'ios' ? 10 : 0 }}
+                /> */}
                 <Text style={styles.productName} numberOfLines={1}>
-                  bádfdsafasdfsdfa
+                  {item.name}
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity
@@ -48,6 +52,7 @@ const ProductItem = props => {
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
+                    onPress={() => { onDeleteRule(item._id) }}
                     style={{ marginRight: 5, width: 50, backgroundColor: COLOR.danger, alignItems: 'center', justifyContent: 'center', borderRadius: 10, padding: 3 }}>
                     <Text style={{ fontSize: 12, color: COLOR.white }}  >
                       Xóa
@@ -60,20 +65,11 @@ const ProductItem = props => {
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
+                  marginLeft: -5
                 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginLeft: -10,
-                  }}>
-                  <Switch
-                    style={{ marginHorizontal: Platform.OS === 'ios' ? 10 : 10 }}
-                  />
-                  <Text></Text>
-                </View>
+
                 <Text style={styles.textDes}>
-                  Ngân sách : 1.000.000 đ {'(Không giới hạn)'}
+                  ID: {item._id}
                 </Text>
               </View>
               <ScrollView horizontal style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -84,7 +80,7 @@ const ProductItem = props => {
                     color: COLOR.greyDark,
                     marginRight: 20,
                   }}>
-                  Chi phí:
+                  {moment(item.created_at).format("L")}
                 </Text>
 
               </ScrollView>

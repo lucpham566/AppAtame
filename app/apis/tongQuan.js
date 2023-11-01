@@ -100,3 +100,30 @@ export const createAutomatedRule = (data, tiktok_account_id) => {
     rules: data.rules
   });
 };
+
+export const getAutomatedRule = (data, tiktok_account_id) => {
+  console.log(data, tiktok_account_id, "data, tiktok_account_id");
+  return axiosService.get(urlServerTiktok + '/api/v1/auto_ads/automated_rule/get_by_filter/' + tiktok_account_id, {
+    params: {
+      advertiser_id: data.advertiser_id
+    }
+  });
+};
+
+export const updateAutomatedRuleStatus = (data, tiktok_account_id) => {
+  console.log(data, tiktok_account_id, "data, tiktok_account_id");
+  return axiosService.post(urlServerTiktok + '/api/v1/auto_ads/automated_rule/update_status/' + tiktok_account_id, {
+    advertiser_id: data.advertiser_id,
+    operate_type: data.operate_type,
+    rule_ids: data.rule_ids
+  });
+};
+
+export const getHistoryNotify = (data, tiktok_account_id) => {
+  console.log(data, tiktok_account_id, "data, tiktok_account_id");
+  return axiosService.get(urlServerTiktok + '/api/v1/notify/history_firebase/' + tiktok_account_id, {
+    params: {
+      advertiser_id: data.advertiser_id
+    }
+  });
+};

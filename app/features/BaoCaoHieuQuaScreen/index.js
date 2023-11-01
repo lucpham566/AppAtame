@@ -41,17 +41,17 @@ import Toast from 'react-native-toast-message';
 import { formatMoney, formatNumber } from './../../helpers/formatNumber';
 import HeaderTab from '../../components/HeaderTab';
 import ProductItem from './components/ProductItem';
+import { getAutomatedRule, getHistoryNotify } from '../../apis/tongQuan';
 var width = Dimensions.get('window').width; //full width
 var height = Dimensions.get('window').height; //full height
 const BaoCaoHieuQuaScreen = ({ theme, navigation }) => {
-  const shopList = useSelector(store => store.account.shopList);
   const currentShop = useSelector(store => store.account.currentShop);
-  const adsReport = useSelector(store => store.baoCao.adsReport);
-  const productAdsListRe = useSelector(store => store.baoCao.productAdsList);
   const [productAdsList, setProductAdsList] = useState([1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
+  const [notifyList, setNotifyList] = useState([]);
+  const currentAdsAccount = useSelector(store => store.account.currentAdsAccount);
+
   const [optionFilter, setOptionFilter] = useState('real_time');
   const [optionAdsList, setOptionAdsList] = useState('all');
-  const [productName, setProductName] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
   const dispatch = useDispatch();
@@ -61,38 +61,36 @@ const BaoCaoHieuQuaScreen = ({ theme, navigation }) => {
   // }, [productAdsListRe]);
 
   useEffect(() => {
-    const data = {
-      id: currentShop?._id,
-      optionFilter: optionFilter,
-      type: 'homepage',
-      campaign_type: optionAdsList,
-    };
-
-    dispatch(getAdsReport(data));
-    dispatch(getProductAdsList(data));
-  }, [currentShop, optionFilter]);
-
-  useEffect(() => {
-    onFetchDataAdsList();
-  }, [optionAdsList]);
+    onRefresh();
+  }, [currentAdsAccount]);
 
 
   const onRefresh = () => {
     setRefreshing(true);
 
-    const data = {
-      id: currentShop?._id,
-      optionFilter: optionFilter,
-      type: 'homepage',
-      campaign_type: optionAdsList,
-    };
-
-    dispatch(getAdsReport(data));
-    dispatch(getProductAdsList(data));
-    setProductAdsList(productAdsListRe);
+    fetchData();
 
     setRefreshing(false);
   };
+
+
+  async function fetchData() {
+    try {
+
+      const response = await getHistoryNotify({ advertiser_id: currentAdsAccount.advertiser_id }, currentShop.id);
+      if (response && response.data && response.data.data) {
+        const data = response.data.data.data;
+        setNotifyList(data);
+      }
+      console.log(response.data, "dsafdsafjklsadfk");
+    } catch (error) {
+      console.log(error?.response?.data, "#12321s");
+      console.log(error, "#12321s");
+    }
+
+  }
+
+  console.log(notifyList, "notifyList dầdsafsad");
 
   const onFetchDataAdsList = () => {
     const data = {
@@ -111,41 +109,6 @@ const BaoCaoHieuQuaScreen = ({ theme, navigation }) => {
     { name: '7 ngày', value: 'past7days' },
     { name: '30 ngày', value: 'past30days' },
   ];
-
-  const renderListOptionFilter = () => {
-    return listOptionFilter.map((item, index) => {
-      return (
-        <View style={[styles.tabOptionItem]} key={index}>
-          <TouchableOpacity
-            style={[
-              {
-                backgroundColor: COLOR.white,
-                borderColor: COLOR.light,
-                borderWidth: 1,
-                borderRadius: 16,
-              },
-              optionFilter === item.value && styles.tabOptionItemActive,
-            ]}
-            onPress={() => {
-              setOptionFilter(item.value);
-            }}>
-            <Text
-              style={{
-                color: optionFilter === item.value ? COLOR.primary : COLOR.grey,
-                fontWeight: optionFilter === item.value ? 'bold' : 'normal',
-                fontSize: 13,
-                textAlign: 'center',
-                paddingHorizontal: 2,
-                paddingVertical: 5,
-                borderRadius: 5,
-              }}>
-              {item.name}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    });
-  };
 
   const renderItemLeft = () => {
     return (
@@ -205,7 +168,7 @@ const BaoCaoHieuQuaScreen = ({ theme, navigation }) => {
       });
     }
   };
-  const renderListProductPreview = productAdsList
+  const renderListProductPreview = notifyList
     .map((item, index) => {
       return (
         <ProductItem

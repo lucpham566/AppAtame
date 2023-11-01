@@ -29,7 +29,7 @@ import Chart from '../../components/Chart';
 import styles from './styles';
 import { useSelector, useDispatch } from 'react-redux';
 import ProductList from './components/ProductList';
-import { showModalSelectShop } from '../MainScreen/actions';
+import { showModalConfigNotify, showModalSelectShop } from '../MainScreen/actions';
 import { getAdsReport, getProductAdsList } from './actions';
 import HeaderTab from '../../components/HeaderTab';
 import ModalUpdateAds from '../BaoCaoHieuQuaScreen/components/ModalUpdateAds';
@@ -38,125 +38,57 @@ import {
   updateAdsState,
 } from '../BaoCaoHieuQuaScreen/actions';
 import { useCallback } from 'react';
+import { getAutomatedRule, updateAutomatedRuleStatus } from '../../apis/tongQuan';
 var width = Dimensions.get('window').width; //full width
 var height = Dimensions.get('window').height; //full height
 const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
-  const shopList = useSelector(store => store.account.shopList);
   const currentShop = useSelector(store => store.account.currentShop);
-  const adsReport = useSelector(store => store.baoCao.adsReport);
-  const productAdsListRe = useSelector(store => store.baoCao.productAdsList);
+  const currentAdsAccount = useSelector(store => store.account.currentAdsAccount);
+  const isShowModal = useSelector(store => store.account.showModalConfigNotify);
+
   const [productAdsList, setProductAdsList] = useState([1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4]);
-  const [optionFilter, setOptionFilter] = useState('real_time');
-  const [optionAdsList, setOptionAdsList] = useState('search');
-  const [productName, setProductName] = useState('');
+  const [ruleList, setRuleList] = useState([]);
+
   const [refreshing, setRefreshing] = useState(false);
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-  }, [productAdsListRe]);
-
-  useEffect(() => {
-    const data = {
-      id: currentShop?._id,
-      optionFilter: optionFilter,
-      type: 'homepage',
-      campaign_type: optionAdsList,
-    };
-
-    dispatch(getAdsReport(data));
-    dispatch(getProductAdsList(data));
-  }, [currentShop, optionFilter]);
 
   const onRefresh = () => {
     setRefreshing(true);
 
-    const data = {
-      id: currentShop?._id,
-      optionFilter: optionFilter,
-      type: 'homepage',
-      campaign_type: optionAdsList,
-    };
-
-    dispatch(getAdsReport(data));
-    dispatch(getProductAdsList(data));
+    fetchData()
 
     setRefreshing(false);
   };
 
-  useEffect(() => {
-    onFetchDataAdsList();
-  }, [optionAdsList]);
+
+  async function fetchData() {
+    // You can await here
+    try {
+
+      const response = await getAutomatedRule({ advertiser_id: currentAdsAccount.advertiser_id }, currentShop.id);
+      if (response && response.data && response.data.data) {
+        const rules = response.data.data.rules;
+        setRuleList(rules);
+      }
+      console.log(response.data, "dsafdsafjklsadfk");
+    } catch (error) {
+      console.log(error?.response?.data, "#12321s");
+      console.log(error, "#12321s");
+    }
+
+  }
 
   useEffect(() => {
-    const productAdsListFilter = productAdsListRe?.filter(i => {
-      const name = i.product?.name
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+    fetchData();
+  }, []);
 
-      const nameCompare = productName
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+  useEffect(() => {
+    fetchData();
+  }, [isShowModal])
 
-      return name.includes(nameCompare);
-    });
 
-  }, [productName]);
-
-  const onFetchDataAdsList = () => {
-    const data = {
-      id: currentShop?._id,
-      optionFilter: optionFilter,
-      type: 'homepage',
-      campaign_type: 'search',
-    };
-
-    dispatch(getProductAdsList(data));
-  };
-
-  const listOptionFilter = [
-    { name: 'Hôm nay', value: 'real_time' },
-    { name: 'Hôm qua', value: 'yesterday' },
-    { name: '7 ngày', value: 'past7days' },
-    { name: '30 ngày', value: 'past30days' },
-  ];
-
-  const renderListOptionFilter = () => {
-    return listOptionFilter.map((item, index) => {
-      return (
-        <View style={[styles.tabOptionItem]} key={index}>
-          <TouchableOpacity
-            style={[
-              {
-                backgroundColor: COLOR.white,
-                borderColor: COLOR.light,
-                borderWidth: 1,
-                borderRadius: 16,
-              },
-              optionFilter === item.value && styles.tabOptionItemActive,
-            ]}
-            onPress={() => {
-              setOptionFilter(item.value);
-            }}>
-            <Text
-              style={{
-                color: optionFilter === item.value ? COLOR.primary : COLOR.grey,
-                fontWeight: optionFilter === item.value ? 'bold' : 'normal',
-                fontSize: 13,
-                textAlign: 'center',
-                paddingHorizontal: 2,
-                paddingVertical: 5,
-                borderRadius: 5,
-              }}>
-              {item.name}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
-    });
-  };
 
   const renderItemLeft = () => {
     return (
@@ -223,6 +155,37 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
     }
   };
 
+  async function updateRuleStatus(status, rule_ids) {
+    // You can await here
+    try {
+      const data = {
+        advertiser_id: currentAdsAccount.advertiser_id,
+        operate_type: status,
+        rule_ids: rule_ids
+      };
+
+      const response = await updateAutomatedRuleStatus(data, currentShop.id);
+      if (response && response.data && response.data.data) {
+        fetchData();
+      }
+      console.log(response.data, "kết #21321312");
+    } catch (error) {
+      console.log(error?.response?.data, "#12321s");
+      console.log(error, "#12321s");
+    }
+
+  }
+
+
+  const onDeleteRule = (id) => {
+    console.log("xóa id nè ", id);
+    updateRuleStatus("DELETE", [id])
+  };
+
+  const showModalConfig = () => {
+    dispatch(showModalConfigNotify([]));
+  };
+
   return (
     <Container>
       <HeaderTab
@@ -230,57 +193,22 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
         title="Cấu hình thông báo"
         navigation={navigation}
       />
-      <Content>
-
+      <Content refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
+        <TouchableOpacity
+          onPress={() => showModalConfig()}
+          style={{ width: 200, margin: 10, backgroundColor: COLOR.primaryLight, alignItems: 'center', borderRadius: 10, padding: 3 }}>
+          <Text>Thêm cấu hình</Text>
+        </TouchableOpacity>
         <ProductList
-          data={productAdsList}
-          onFetchDataAdsList={onFetchDataAdsList}
+          data={ruleList}
           navigation={navigation}
           handleCheckAds={handleCheckAds}
+          onDeleteRule={onDeleteRule}
         />
       </Content>
-      {productAdsList.filter(i => i.checked === true).length > 0 ? (
-        <View style={{ padding: 10, flexDirection: 'row' }}>
-          <Button
-            onPress={onchangeStateAdsMutil}
-            style={{
-              backgroundColor: COLOR.primary,
-              margin: 5,
-              borderRadius: 5,
-              flex: 1,
-            }}
-            block>
-            <Text
-              style={{
-                color: COLOR.white,
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}>
-              Tạm dừng hàng loạt
-            </Text>
-          </Button>
-          <Button
-            onPress={onHandleOpenModalUpdate}
-            style={{
-              backgroundColor: COLOR.primary,
-              margin: 5,
-              borderRadius: 5,
-              flex: 1,
-            }}
-            block>
-            <Text
-              style={{
-                color: COLOR.white,
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}>
-              Điều chỉnh ngân sách
-            </Text>
-          </Button>
-        </View>
-      ) : null}
 
-      <ModalUpdateAds onFetchDataAdsList={onFetchDataAdsList} />
     </Container>
   );
 };

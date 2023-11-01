@@ -1,4 +1,4 @@
-import {Form, Input, Text, Picker} from 'native-base';
+import { Form, Input, Text, Picker } from 'native-base';
 import React, {
   memo,
   useMemo,
@@ -7,12 +7,12 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import {View, Dimensions, TouchableOpacity, Image} from 'react-native';
-import {useSelector} from 'react-redux';
-import {RecyclerListView, DataProvider, LayoutProvider} from 'recyclerlistview'; // Version can be specified in package.json
+import { View, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RecyclerListView, DataProvider, LayoutProvider } from 'recyclerlistview'; // Version can be specified in package.json
 import ModalFilterCampaign from '../../../components/Modal/ModalFilterCampaign';
-import {filterProductHelper} from '../../../helpers/helper';
-import {COLOR} from '../../../theme';
+import { filterProductHelper } from '../../../helpers/helper';
+import { COLOR } from '../../../theme';
 import ProductItem from './ProductItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ModalSelectSort from '../../../components/Modal/ModalSelectSort';
@@ -21,10 +21,10 @@ const ViewTypes = {
   ITEM: 0,
 };
 
-let {width} = Dimensions.get('window');
+let { width } = Dimensions.get('window');
 
 const ProductList = props => {
-  const {data, onFetchDataAdsList, navigation, handleCheckAds} = props;
+  const { data, onFetchDataAdsList, navigation, handleCheckAds, onDeleteRule } = props;
   const [productAdsList, setProductAdsList] = useState([]);
   const [showModalFilter, setShowModalFilter] = useState(false);
 
@@ -69,10 +69,11 @@ const ProductList = props => {
       case ViewTypes.ITEM:
         return (
           <ProductItem
-            //item={data}
+            item={data}
             onFetchDataAdsList={onFetchDataAdsList}
             navigation={navigation}
             handleCheckAds={handleCheckAds}
+            onDeleteRule={onDeleteRule}
           />
         );
       default:
@@ -168,10 +169,10 @@ const ProductList = props => {
         style={{
           backgroundColor: COLOR.white,
         }}>
-        <Text style={{marginVertical: 5, fontSize: 14, color: COLOR.grey}}>
-          Có tất cả {productAdsList.length} quảng cáo
+        <Text style={{ marginVertical: 5, fontSize: 14, color: COLOR.grey }}>
+          Có tất cả {productAdsList.length} cấu hình
         </Text>
-        <View style={{minHeight: 1, minWidth: 1, flex: 1}}>
+        <View style={{ minHeight: 1, minWidth: 1, flex: 1 }}>
           <RecyclerListView
             ref={listView}
             nestedScrollEnabled={true}

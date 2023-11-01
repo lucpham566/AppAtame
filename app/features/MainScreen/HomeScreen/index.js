@@ -50,6 +50,7 @@ import ProductList from './components/ProductList';
 import ModalConfigNotify from '../../../components/Modal/ModalConfigNotify';
 import { addDeviceTokenApi } from '../../../apis/account';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { hideLoadingGlobal, showLoadingGlobal } from '../../globalFeatures/actions';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -155,6 +156,7 @@ const HomeScreen = props => {
   ];
 
   useEffect(() => {
+    dispatch(showLoadingGlobal());
     async function fetchData() {
       const info = await getItem('userInfo');
       setUserInfo(info);
@@ -168,6 +170,7 @@ const HomeScreen = props => {
         console.log(error.data, "#1321 error");
         console.log(error, "#1321 error");
       }
+      dispatch(hideLoadingGlobal());
     }
     fetchData();
   }, []);

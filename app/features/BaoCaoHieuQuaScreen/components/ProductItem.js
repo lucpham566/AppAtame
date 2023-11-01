@@ -19,6 +19,7 @@ import {
   formatPercent,
 } from '../../../helpers/formatNumber';
 import { ScrollView } from 'react-native';
+import moment from 'moment';
 
 const ProductItem = props => {
   const { item, onFetchDataAdsList, handleCheckAds } = props;
@@ -36,7 +37,7 @@ const ProductItem = props => {
                 * Cảnh báo chiến dịch
               </Text>
               <Text style={styles.textDes}>
-                ID : 1278321937987
+                ID : {item._id}
               </Text>
             </View>
             <View
@@ -49,7 +50,7 @@ const ProductItem = props => {
               </Text>
             </View>
             <Text style={{ fontSize: 12, fontWeight: '500' }}>
-              10:02 27/10/2023
+              {moment(item.created_at).format("lll")}
             </Text>
           </View>
         </View>
