@@ -97,7 +97,7 @@ function ConfigConditionItem(props) {
     }
 
     return (
-        <View style={{ borderColor: COLOR.greyDark, borderWidth: 1, padding: 10, borderRadius: 10, marginBottom: 5 }}>
+        <View style={{ borderColor: COLOR.primaryLight, borderWidth: 1, padding: 10, borderRadius: 10, marginBottom: 5 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ color: COLOR.greyDark, fontWeight: 'bold' }}>Điều kiện {index + 1}</Text>
             </View>

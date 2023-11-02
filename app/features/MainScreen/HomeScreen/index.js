@@ -176,11 +176,20 @@ const HomeScreen = props => {
   }, []);
 
   useEffect(() => {
+    dispatch(showLoadingGlobal());
+    if (currentShop?.id) {
+      dispatch(getAdsAccountList(currentShop?.id));
+    }
+    dispatch(hideLoadingGlobal());
+
+  }, [currentShop]);
+
+  useEffect(() => {
 
     if (currentAdsAccount && currentAdsAccount.advertiser_id && currentShop && currentShop.id) {
       const data = {
         order_type: "DESC",
-        page_size: 10,
+        page_size: 100,
         page: 1,
         advertiser_id: currentAdsAccount.advertiser_id,
         report_type: "BASIC",
@@ -192,32 +201,8 @@ const HomeScreen = props => {
     }
   }, [currentAdsAccount]);
 
-
-  useEffect(() => {
-    const data = {
-      id: currentShop?.id,
-      optionFilter: optionFilter,
-      type: 'homepage',
-    };
-    dispatch(getShopReportHome(data));
-    dispatch(getAdsReportHome(data));
-    dispatch(getAdsPerformance(data));
-    if (currentShop?.id) {
-      dispatch(getAdsAccountList(currentShop?.id));
-    }
-  }, [currentShop, optionFilter]);
-
   const onRefresh = () => {
     setRefreshing(true);
-    const data = {
-      id: currentShop?.id,
-      optionFilter: optionFilter,
-      type: 'homepage',
-    };
-
-    dispatch(getShopReportHome(data));
-    dispatch(getAdsReportHome(data));
-    dispatch(getAdsPerformance(data));
     if (currentShop?.id) {
       dispatch(getAdsAccountList(currentShop?.id));
     }
@@ -227,27 +212,6 @@ const HomeScreen = props => {
   useEffect(() => {
     fetchGoiSanPham();
   }, [goiSanPham]);
-
-  useEffect(() => {
-    const title = titleChart[0];
-    const points = shopReportHome[title]?.points;
-    if (points) {
-      const labels = points.map(i => {
-        if (optionFilter === 'past7days' || optionFilter === 'past30days') {
-          return moment(i.timestamp * 1000).format('DD/MM');
-        }
-        return moment(i.timestamp * 1000).format('LT');
-      });
-      const data = points.map(i => {
-        if (title === 'shop_uv_to_placed_buyers_rate') {
-          return (i.value * 100).toFixed(2);
-        }
-        return i.value;
-      });
-      setLabelChart([...labels]);
-      setDataChart([...data]);
-    }
-  }, [titleChart, shopReportHome]);
 
   const fetchGoiSanPham = () => {
     if (goiSanPham.extend_package?.length > 0) {

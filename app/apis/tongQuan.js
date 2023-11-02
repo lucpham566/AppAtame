@@ -110,6 +110,16 @@ export const getAutomatedRule = (data, tiktok_account_id) => {
   });
 };
 
+export const updateAutomatedRule = (data, tiktok_account_id) => {
+  console.log(data, tiktok_account_id, "data, tiktok_account_id");
+  return axiosService.post(urlServerTiktok + '/api/v1/auto_ads/automated_rule/update/' + tiktok_account_id, {
+    advertiser_id: data.advertiser_id,
+    rule: data.rule,
+    rule_id: data.rule_id
+  });
+};
+
+
 export const updateAutomatedRuleStatus = (data, tiktok_account_id) => {
   console.log(data, tiktok_account_id, "data, tiktok_account_id");
   return axiosService.post(urlServerTiktok + '/api/v1/auto_ads/automated_rule/update_status/' + tiktok_account_id, {

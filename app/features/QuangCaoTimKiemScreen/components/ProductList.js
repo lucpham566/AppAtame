@@ -169,7 +169,7 @@ const ProductList = props => {
         style={{
           backgroundColor: COLOR.white,
         }}>
-        <Text style={{ marginVertical: 5, fontSize: 14, color: COLOR.grey }}>
+        <Text style={{ marginVertical: 5, marginHorizontal: 10, fontSize: 14, color: COLOR.grey }}>
           Có tất cả {productAdsList.length} cấu hình
         </Text>
         <View style={{ minHeight: 1, minWidth: 1, flex: 1 }}>

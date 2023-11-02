@@ -64,7 +64,7 @@ const TabScreen = () => {
               label = 'Tổng quan';
               break;
             case 'BaoCaoHieuQuaScreen':
-              label = 'Báo cáo';
+              label = 'Lịch sử';
               break;
             case 'CauHinhScreen':
               label = 'Cấu hình';

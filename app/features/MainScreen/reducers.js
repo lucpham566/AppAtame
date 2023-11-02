@@ -12,6 +12,10 @@ const initialState = {
   showModalSelectShop: false,
   showModalSelectAdsAccount: false,
   showModalConfigNotify: false,
+  ConfigNotifyId: "",
+  ConfigNotifyData: "",
+  ConfigNotifyApplyObjects: [
+  ],
   shopReportHome: {},
   adsReportHome: {},
   adsPerformance: {},
@@ -111,14 +115,25 @@ const accountReducer = (state = initialState, action) => {
         showModalSelectAdsAccount: false,
       };
     case types.SHOW_MODAL_CONFIG_NOTIFY:
-      return {
-        ...state,
-        showModalConfigNotify: true,
-      };
+      {
+        const data = action.payload.data;
+        const { ConfigNotifyId, ConfigNotifyData, ConfigNotifyApplyObject } = data;
+
+        return {
+          ...state,
+          showModalConfigNotify: true,
+          ConfigNotifyId,
+          ConfigNotifyData,
+          ConfigNotifyApplyObject
+        };
+      }
     case types.HIDE_MODAL_CONFIG_NOTIFY:
       return {
         ...state,
         showModalConfigNotify: false,
+        ConfigNotifyId: null,
+        ConfigNotifyData: null,
+        ConfigNotifyApplyObjects: null
       };
 
     case types.GET_REPORT:

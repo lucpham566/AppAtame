@@ -72,7 +72,6 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
         const rules = response.data.data.rules;
         setRuleList(rules);
       }
-      console.log(response.data, "dsafdsafjklsadfk");
     } catch (error) {
       console.log(error?.response?.data, "#12321s");
       console.log(error, "#12321s");
@@ -198,8 +197,8 @@ const QuangCaoTimKiemScreen = ({ theme, navigation }) => {
       }>
         <TouchableOpacity
           onPress={() => showModalConfig()}
-          style={{ width: 200, margin: 10, backgroundColor: COLOR.primaryLight, alignItems: 'center', borderRadius: 10, padding: 3 }}>
-          <Text>Thêm cấu hình</Text>
+          style={{ width: 200, margin: 10, backgroundColor: COLOR.primary, alignItems: 'center', borderRadius: 10, padding: 10 }}>
+          <Text style={{ color: COLOR.white }}>Thêm cấu hình</Text>
         </TouchableOpacity>
         <ProductList
           data={ruleList}

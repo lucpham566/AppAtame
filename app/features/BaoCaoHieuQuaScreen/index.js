@@ -82,15 +82,12 @@ const BaoCaoHieuQuaScreen = ({ theme, navigation }) => {
         const data = response.data.data.data;
         setNotifyList(data);
       }
-      console.log(response.data, "dsafdsafjklsadfk");
     } catch (error) {
       console.log(error?.response?.data, "#12321s");
       console.log(error, "#12321s");
     }
 
   }
-
-  console.log(notifyList, "notifyList dầdsafsad");
 
   const onFetchDataAdsList = () => {
     const data = {
@@ -183,7 +180,7 @@ const BaoCaoHieuQuaScreen = ({ theme, navigation }) => {
     <Container>
       <HeaderTab
         renderItemLeft={renderItemLeft()}
-        title="Báo cáo hiệu quả"
+        title="Lịch sử"
         navigation={navigation}
       />
       <Content

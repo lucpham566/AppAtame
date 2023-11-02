@@ -101,7 +101,12 @@ const ProductItem = props => {
   };
 
   const showModalConfig = id => {
-    dispatch(showModalConfigNotify([id]));
+    const ConfigNotifyApplyObject = {
+      dimension: optionAdsList,
+      dimension_ids: [id],
+      pre_condition_type: "SELECTED"
+    }
+    dispatch(showModalConfigNotify({ ConfigNotifyApplyObject }));
   };
 
   return (
@@ -122,9 +127,9 @@ const ProductItem = props => {
                 {item[optionAdsList][optionAdsList + "_name"]}
               </Text>
               <TouchableOpacity
-                onPress={() => showModalConfig(item[optionAdsList].id)}
-                style={{ width: 50, backgroundColor: COLOR.primaryLight, alignItems: 'center', borderRadius: 10, padding: 3 }}>
-                <Image style={{ width: 20, height: 20 ,tintColor:COLOR.white}} source={require(`../../../../assets/image/icon_tabar_4.png`)} />
+                onPress={() => showModalConfig(item[optionAdsList][optionAdsList + "_id"])}
+                style={{ width: 50, backgroundColor: COLOR.primary, alignItems: 'center', borderRadius: 10, padding: 3 }}>
+                <Image style={{ width: 20, height: 20, tintColor: COLOR.white }} source={require(`../../../../assets/image/icon_tabar_4.png`)} />
               </TouchableOpacity>
             </View>
             <View

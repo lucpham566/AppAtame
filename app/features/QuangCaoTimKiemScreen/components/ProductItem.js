@@ -21,13 +21,21 @@ import { showModalUpdateAds } from '../../BaoCaoHieuQuaScreen/actions';
 import { Switch } from 'react-native';
 import { Platform } from 'react-native';
 import moment from 'moment';
+import { showModalConfigNotify } from '../../MainScreen/actions';
 
 const ProductItem = props => {
   const { item, onFetchDataAdsList, navigation, handleCheckAds, onDeleteRule } = props;
   // const [check, setCheck] = useState(false);
   const currentShop = useSelector(store => store.account.currentShop);
-  console.log(item, "Dầdsfa");
   const dispatch = useDispatch();
+
+  const showModalUpdateConfig = () => {
+    const data = {
+      ConfigNotifyId: item._id,
+      ConfigNotifyData: item
+    }
+    dispatch(showModalConfigNotify(data));
+  };
 
   return (
     <>
@@ -46,6 +54,7 @@ const ProductItem = props => {
                 </Text>
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity
+                    onPress={() => { showModalUpdateConfig() }}
                     style={{ marginRight: 5, width: 50, backgroundColor: COLOR.primaryDark, alignItems: 'center', justifyContent: 'center', borderRadius: 10, padding: 3 }}>
                     <Text style={{ fontSize: 12, color: COLOR.white }}  >
                       Sửa

@@ -208,7 +208,11 @@ export const showModalConfigNotify = (data, callback) => {
   return {
     type: types.SHOW_MODAL_CONFIG_NOTIFY,
     payload: {
-      data,
+      data: {
+        ConfigNotifyId: data.ConfigNotifyId,
+        ConfigNotifyData: data.ConfigNotifyData,
+        ConfigNotifyApplyObject: data.ConfigNotifyApplyObject
+      },
       callback,
     },
   };

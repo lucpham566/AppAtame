@@ -114,7 +114,7 @@ function* watchGetReportAction({ payload }) {
     start_date: data.start_date,
     end_date: data.end_date,
     filtering: data.filtering,
-    metrics: ["spend", "cpc", "cpm", "impressions", "clicks", "ctr", "conversion", "cost_per_conversion", "conversion_rate"]
+    metrics: `["spend", "cpc", "cpm", "impressions", "clicks", "ctr", "conversion", "cost_per_conversion", "conversion_rate"]`
   }
 
   const query_campaign = { ...query_params, type: "campaign_id" };
