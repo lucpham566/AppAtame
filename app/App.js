@@ -16,6 +16,7 @@ import { setCustomText } from 'react-native-global-props';
 import toastConfig from './components/BaseToast/config';
 import { Text } from 'native-base';
 import { NotificationListener, requestUserPermission } from './helpers/pushNotifycation';
+import { Notifications } from 'react-native-notifications';
 
 moment.locale('vi');
 
@@ -29,7 +30,7 @@ const App = () => {
     requestUserPermission();
     NotificationListener();
   }, [])
-  
+
   /*
     1. Create the config
   */
@@ -60,7 +61,6 @@ const App = () => {
       />
     ),
   };
-
 
 
   return (

@@ -20,12 +20,13 @@ import {
 } from '../../../helpers/formatNumber';
 import { ScrollView } from 'react-native';
 import moment from 'moment';
+import { genTextFromRuleAutomated } from '../../../helpers/helper';
 
 const ProductItem = props => {
   const { item, onFetchDataAdsList, handleCheckAds } = props;
 
   const dispatch = useDispatch();
-
+  console.log(item.rule_response, "item.rule_response");
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <View style={styles.productItem}>
@@ -46,7 +47,8 @@ const ProductItem = props => {
                 alignItems: 'center',
               }}>
               <Text style={styles.textDes}>
-                Chiến dịch abadscasdf đang có xu hướng xấu đi vui lòng kiểm tra lại để nắm rõ thông tin
+                Thông báo chiến dịch
+                {/* {genTextFromRuleAutomated(item.rule_response)} */}
               </Text>
             </View>
             <Text style={{ fontSize: 12, fontWeight: '500' }}>

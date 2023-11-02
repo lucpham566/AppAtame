@@ -36,8 +36,6 @@ const ProductItem = props => {
     handleCheckAds(item.campaign?.campaignid, !checked);
   };
 
-  console.log(item.spend, item, "item.cpm");
-
   const onChangeState = (status, id) => {
     setAdsStatus(!adsStatus);
     let state = 'ENABLE';

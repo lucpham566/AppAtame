@@ -1,5 +1,5 @@
-import {ListItem, Text} from 'native-base';
-import {urlServer} from '../commons/server';
+import { ListItem, Text } from 'native-base';
+import { urlServer } from '../commons/server';
 
 let accountAvatar =
   'https://cdn.landesa.org/wp-content/uploads/default-user-image.png';
@@ -59,3 +59,66 @@ export const filterProductHelper = (data, nameSearch) => {
     );
   });
 };
+
+export const genTextFromRuleAutomated = (rule) => {
+  let text = "";
+
+  const apply_objects = rule.apply_objects;
+  const conditions = rule.conditions;
+
+  if (!rule && apply_objects && conditions) {
+    return text;
+  }
+  conditions?.map(condition => {
+    const { subject_type, range_type, match_type, values, calculation_type } = condition;
+    text += genTextSubjectType(subject_type) + " " + genTextMatchType(match_type) + " " + genTextValue(match_type, values) + " ";
+  })
+  return text;
+};
+
+const genTextMatchType = (match_type) => {
+  let text = "";
+  switch (match_type) {
+    case "GT":
+      text = "vượt quá"
+      break;
+    case "LT":
+      text = "giảm quá"
+      break;
+    case "BETWEEN":
+      text = "vào ngưỡng"
+      break;
+  }
+
+  return text;
+}
+
+const genTextValue = (match_type, values) => {
+  let text = "";
+  switch (match_type) {
+    case "GT":
+      text = values[0]
+      break;
+    case "LT":
+      text = values[0]
+      break;
+    case "BETWEEN":
+      text = values[0] + " đến " + values[1];
+      break;
+  }
+
+  return text;
+}
+
+const genTextSubjectType = (subject_type) => {
+
+  const data_text = [
+    { key: "spend", value: "chi phí" }
+  ]
+  const subject = data_text.find(i => i.key === subject_type)
+  if (subject) {
+    return subject.value;
+  }
+
+  return subject_type;
+}

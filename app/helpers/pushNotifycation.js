@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { addDeviceTokenApi } from '../apis/account';
+import { Notifications } from 'react-native-notifications';
+import { genTextFromRuleAutomated } from './helper';
 
 export async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
@@ -37,7 +39,7 @@ export const NotificationListener = () => {
             remoteMessage.notification,
         );
     });
-    
+
 
     messaging()
         .getInitialNotification()
@@ -50,12 +52,28 @@ export const NotificationListener = () => {
             }
         });
 
-    messaging().onMessage(async remoteMessage =>{
+    messaging().onMessage(async remoteMessage => {
         console.log("notification on froground state ......", remoteMessage);
+        const { notification, data } = remoteMessage;
+        const { rule } = data
+
+        const rule_data = JSON.parse(rule);
+
+        Notifications.postLocalNotification({
+            title: notification?.title,
+            body: genTextFromRuleAutomated(rule_data),
+        });
     })
 
     messaging().setBackgroundMessageHandler(async remoteMessage => {
         // Handle background messages here
+        const { notification, data } = remoteMessage;
+        const { rule } = data
+
         console.log('Message handled in the background!', remoteMessage);
-      });
+        Notifications.postLocalNotification({
+            title: notification?.title,
+            body: "",
+        });
+    });
 }
