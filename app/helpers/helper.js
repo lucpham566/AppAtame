@@ -60,7 +60,7 @@ export const filterProductHelper = (data, nameSearch) => {
   });
 };
 
-export const genTextFromRuleAutomated = (rule) => {
+export const genTextFromRuleAutomated = (rule, dimension, dimension_id) => {
   let text = "";
 
   const apply_objects = rule.apply_objects;
@@ -73,6 +73,11 @@ export const genTextFromRuleAutomated = (rule) => {
     const { subject_type, range_type, match_type, values, calculation_type } = condition;
     text += genTextSubjectType(subject_type) + " " + genTextMatchType(match_type) + " " + genTextValue(match_type, values) + " ";
   })
+
+  console.log(dimension, dimension_id, "asdhdksajsdka dimension");
+
+  text = genTextDimension(dimension) + " " + dimension_id + " " + text;
+
   return text;
 };
 
@@ -80,10 +85,10 @@ const genTextMatchType = (match_type) => {
   let text = "";
   switch (match_type) {
     case "GT":
-      text = "vượt quá"
+      text = "trên"
       break;
     case "LT":
-      text = "giảm quá"
+      text = "dưới"
       break;
     case "BETWEEN":
       text = "vào ngưỡng"
@@ -97,13 +102,13 @@ const genTextValue = (match_type, values) => {
   let text = "";
   switch (match_type) {
     case "GT":
-      text = values[0]
+      text = Number(values[0])
       break;
     case "LT":
-      text = values[0]
+      text = Number(values[0])
       break;
     case "BETWEEN":
-      text = values[0] + " đến " + values[1];
+      text = Number(values[0]) + " đến " + Number(values[1]);
       break;
   }
 
@@ -121,4 +126,22 @@ const genTextSubjectType = (subject_type) => {
   }
 
   return subject_type;
+}
+
+const genTextDimension = (dimension) => {
+
+  let text = "";
+  switch (dimension) {
+    case "CAMPAIGN":
+      text = "Chiến dịch";
+      break;
+    case "ADGROUP":
+      text = "Nhóm quảng cáo";
+      break;
+    case "AD":
+      text = "Quảng cáo";
+      break;
+  }
+
+  return text;
 }

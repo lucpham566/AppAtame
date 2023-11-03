@@ -55,13 +55,14 @@ export const NotificationListener = () => {
     messaging().onMessage(async remoteMessage => {
         console.log("notification on froground state ......", remoteMessage);
         const { notification, data } = remoteMessage;
-        const { rule } = data
+        const { rule, dimension,
+            dimension_id } = data
 
         const rule_data = JSON.parse(rule);
 
         Notifications.postLocalNotification({
             title: notification?.title,
-            body: genTextFromRuleAutomated(rule_data),
+            body: genTextFromRuleAutomated(rule_data, dimension, dimension_id),
         });
     })
 

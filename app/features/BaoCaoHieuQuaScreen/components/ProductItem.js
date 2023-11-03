@@ -26,7 +26,11 @@ const ProductItem = props => {
   const { item, onFetchDataAdsList, handleCheckAds } = props;
 
   const dispatch = useDispatch();
-  console.log(item.rule_response, "item.rule_response");
+
+  const dimension = item.dimension
+  const dimension_id = item.dimension_id
+  const rule = item.rule_response;
+
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <View style={styles.productItem}>
@@ -47,8 +51,7 @@ const ProductItem = props => {
                 alignItems: 'center',
               }}>
               <Text style={styles.textDes}>
-                Thông báo chiến dịch
-                {/* {genTextFromRuleAutomated(item.rule_response)} */}
+                {genTextFromRuleAutomated(rule, dimension, dimension_id)}
               </Text>
             </View>
             <Text style={{ fontSize: 12, fontWeight: '500' }}>

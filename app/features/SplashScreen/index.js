@@ -44,12 +44,12 @@ const SplashScreen = props => {
         style={{
           fontSize: 18,
           fontWeight: 'bold',
-          color: COLOR.secondary,
+          color: COLOR.primary,
           padding: 10,
           textAlign: 'center',
           marginTop: 10,
         }}>
-        ATOSA ADS
+        ATAME
       </Text>
     </View>
   );
